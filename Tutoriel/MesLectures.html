@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feuillets · Mes lectures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1c1a18;
+    --bg-soft:#211f1c;
+    --ink:#f4f0ea;
+    --soft:#c7c0b6;
+    --muted:#8a837a;
+    --faint:#6f685f;
+    --line:#37322d;
+    --line-2:#46403a;
+    --accent:#c4774e;
+    --serif:"Playfair Display", Georgia, serif;
+    --book:"Lora", Georgia, serif;
+    --sans:"Mulish", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;}
+  a{color:inherit;text-decoration:none;}
+  .page{max-width:1120px;margin:0 auto;}
+
+  /* ---------- Header ---------- */
+  header{display:flex;align-items:center;gap:34px;padding:20px 22px;border-bottom:1px solid var(--line);}
+  .logo{font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.01em;line-height:1;}
+  .logo i{font-style:italic;font-weight:500;color:var(--accent);}
+  nav{display:flex;align-items:center;gap:30px;margin-left:6px;}
+  nav a{font-size:14.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;opacity:.92;transition:opacity .2s,color .2s;}
+  nav a:hover{color:var(--accent);opacity:1;}
+  .actions{margin-left:auto;display:flex;align-items:center;gap:20px;}
+  .search{background:none;border:none;color:var(--ink);cursor:pointer;display:flex;opacity:.9;transition:color .2s;}
+  .search:hover{color:var(--accent);}
+  .btn-line{font-family:var(--sans);border:1px solid var(--line);background:none;color:var(--ink);padding:13px 26px;font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,background .2s;}
+  .btn-line:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+  .btn-publish{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);border:1px solid var(--accent);background:var(--accent);color:#1c1a18;text-decoration:none;padding:13px 22px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s;}
+  .btn-publish:hover{background:#d4865c;border-color:#d4865c;}
+  .btn-publish svg{width:16px;height:16px;}
+
+  /* ---------- Head ---------- */
+  .lib-head{padding:42px 22px 34px;}
+  .kicker{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .kicker svg{width:15px;height:15px;}
+  .lib-head h1{font-family:var(--serif);font-weight:800;font-size:46px;line-height:1.04;letter-spacing:-.01em;color:#fbf8f3;}
+  .lib-head p{font-family:var(--book);font-style:italic;font-size:18px;color:var(--soft);margin-top:14px;max-width:54ch;}
+
+  /* ---------- Section ---------- */
+  .lib-section{padding:0 22px;}
+  .lib-section + .lib-section{margin-top:54px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;padding:16px 0 18px;border-bottom:1px solid var(--line);margin-bottom:0;}
+  .sec-head h2{font-family:var(--serif);font-weight:700;font-size:26px;color:#fbf8f3;flex:none;}
+  .sec-count{font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .sec-count:empty{display:none;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--line);
+    border:1px solid var(--line);border-top:none;}
+  .card{background:var(--bg);padding:26px 26px 24px;display:flex;flex-direction:column;position:relative;transition:background .2s;}
+  .card:hover{background:var(--bg-soft);}
+  .card-themes{display:flex;flex-wrap:wrap;gap:8px 12px;margin-bottom:14px;}
+  .tlabel{font-size:11.5px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;position:relative;}
+  .tlabel + .tlabel::before{content:"·";position:absolute;left:-9px;color:var(--faint);}
+  .card h3{font-family:var(--serif);font-weight:700;font-size:23px;line-height:1.16;color:#fbf8f3;margin-bottom:13px;}
+  .card .excerpt{font-family:var(--book);font-style:italic;font-size:15.5px;line-height:1.55;color:var(--soft);
+    margin-bottom:18px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+  .ttag{font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 9px;}
+  .card-meta{margin-top:auto;font-size:13.5px;color:var(--muted);display:flex;align-items:center;gap:7px;}
+  .card-meta .rr{margin-left:auto;display:inline-flex;align-items:center;gap:11px;}
+  .card-meta .rating{display:inline-flex;align-items:center;gap:5px;color:var(--soft);font-variant-numeric:tabular-nums;}
+  .card-meta .rating .star{color:#e0b341;}
+  .card-meta .read{display:inline-flex;align-items:center;gap:6px;color:var(--faint);}
+  .card-meta .rr-new{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);}
+
+  .series-flag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:13px;line-height:1.3;}
+  .series-flag svg{width:13px;height:13px;flex:none;}
+  .series-flag .tome{color:var(--muted);font-weight:500;}
+
+  .card.series-card .series-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .card.series-card .series-tag svg{width:14px;height:14px;}
+  .series-toc{list-style:none;margin:2px 0 20px;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .series-toc li{display:flex;align-items:baseline;gap:10px;font-family:var(--book);font-size:14.5px;line-height:1.35;color:var(--soft);}
+  .series-toc li .tn{font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--accent);flex:none;
+    border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);border-radius:3px;padding:1px 6px;position:relative;top:-1px;}
+
+  /* ---------- Empty / signed-out ---------- */
+  .empty{border:1px solid var(--line);border-top:none;padding:58px 30px;text-align:center;}
+  .empty .e-title{font-family:var(--serif);font-style:italic;font-size:21px;color:var(--soft);margin-bottom:8px;}
+  .empty .e-sub{font-size:14.5px;color:var(--muted);margin-bottom:24px;}
+  .empty a{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);border:1px solid var(--line-2);background:none;color:var(--ink);
+    padding:12px 22px;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;transition:border-color .2s,background .2s,gap .2s;}
+  .empty a:hover{border-color:var(--accent);background:rgba(196,119,78,.08);gap:13px;}
+
+  .signin{margin:30px 22px 0;border:1px solid var(--line);padding:70px 30px;text-align:center;
+    background:radial-gradient(120% 130% at 50% 0%, rgba(196,119,78,.06), transparent 62%);}
+  .signin .s-ic{width:54px;height:54px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:22px;
+    color:var(--accent);background:rgba(196,119,78,.13);border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);}
+  .signin .s-ic svg{width:26px;height:26px;}
+  .signin h2{font-family:var(--serif);font-weight:700;font-size:30px;color:#fbf8f3;margin-bottom:12px;}
+  .signin p{font-family:var(--book);font-style:italic;font-size:17px;color:var(--soft);max-width:44ch;margin:0 auto 28px;}
+  .signin a{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);background:var(--accent);border:1px solid var(--accent);color:#1c1a18;
+    padding:14px 26px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:background .18s,border-color .18s;}
+  .signin a:hover{background:#d4865c;border-color:#d4865c;}
+
+  footer{height:70px;}
+
+  @media (max-width:620px){
+    nav{display:none;}
+    .lib-head h1{font-size:36px;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <a class="logo" href="Feuillets.html">Feui<i>llets</i></a>
+    <nav>
+      <a href="Catalogue.html">Le catalogue</a>
+      <a href="Auteurs.html">Auteurs</a>
+    </nav>
+    <div class="actions">
+      <a class="btn-publish" href="NouvellePublication.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        Publier
+      </a>
+      <a class="btn-line" href="Connexion.html">Connexion</a>
+    </div>
+  </header>
+
+  <div class="lib-head">
+    <div class="kicker">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 21l8.8-8.3a5 5 0 0 0 0-7.1z"></path></svg>
+      Votre bibliothèque
+    </div>
+    <h1>Mes lectures</h1>
+    <p>Retrouvez ici les histoires et les séries que vous avez mises en favoris.</p>
+  </div>
+
+  <!-- État déconnecté -->
+  <div class="signin" id="signin" hidden>
+    <div class="s-ic">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 21l8.8-8.3a5 5 0 0 0 0-7.1z"></path></svg>
+    </div>
+    <h2>Connectez-vous pour retrouver vos favoris</h2>
+    <p>Mettez vos histoires et vos séries préférées de côté, et retrouvez-les ici à chaque visite.</p>
+    <a href="Connexion.html">Se connecter <span>→</span></a>
+  </div>
+
+  <!-- Contenu connecté -->
+  <div id="content" hidden>
+    <section class="lib-section">
+      <div class="sec-head">
+        <h2>Histoires en favoris</h2>
+        <span class="sec-count" id="stories-count"></span>
+      </div>
+      <div class="grid" id="stories-grid"></div>
+      <div class="empty" id="stories-empty" hidden>
+        <div class="e-title">Aucune histoire en favoris pour le moment.</div>
+        <div class="e-sub">Parcourez le catalogue et touchez le cœur pour en ajouter.</div>
+        <a href="Catalogue.html">Explorer les histoires <span>→</span></a>
+      </div>
+    </section>
+
+    <section class="lib-section" id="series">
+      <div class="sec-head">
+        <h2>Séries en favoris</h2>
+        <span class="sec-count" id="series-count"></span>
+      </div>
+      <div class="grid" id="series-grid"></div>
+      <div class="empty" id="series-empty" hidden>
+        <div class="e-title">Aucune série en favoris pour le moment.</div>
+        <div class="e-sub">Suivez vos séries préférées pour les garder à portée de main.</div>
+        <a href="Catalogue.html?view=series">Explorer les séries <span>→</span></a>
+      </div>
+    </section>
+  </div>
+
+  <footer></footer>
+</div>
+
+<script src="series.js"></script>
+<script src="catalogue-data.js"></script>
+<script src="publications.js"></script>
+<script src="favoris.js"></script>
+<script>
+const BOOK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a2 2 0 0 1 2 2v14"></path><path d="M8 4v16"></path><path d="M20 7v13H6"></path></svg>`;
+function ratingHtml(it){
+  return it.rating == null
+    ? '<span class="rr-new">Nouveau</span>'
+    : `<span class="rating"><span class="star">★</span> ${FC.fmtRating(it.rating)}</span>`;
+}
+
+function renderStories(){
+  const grid = document.getElementById('stories-grid');
+  const empty = document.getElementById('stories-empty');
+  const slugs = FeuilletsFav.list('stories');
+  const items = slugs.map(sl => FC.bySlug[sl] || (window.FP && FP.storyById(sl))).filter(Boolean);
+  document.getElementById('stories-count').textContent = items.length ? (items.length + (items.length>1?' histoires':' histoire')) : '';
+  grid.innerHTML = '';
+  if(!items.length){ grid.hidden = true; empty.hidden = false; return; }
+  grid.hidden = false; empty.hidden = true;
+
+  items.forEach(st => {
+    const themesHtml = st.themes.map(t => `<span class="tlabel" style="color:${FC.THEME_COLOR[t]}">${t}</span>`).join('');
+    const tagsHtml = st.chars.map(c => `<span class="ttag">${c}</span>`).join('');
+    const mem = (window.FS && FS.byStory[st.slug]) || (window.FP && FP.byStory(st.slug)) || null;
+    const flag = mem ? `<div class="series-flag">${BOOK_ICON}Série · ${mem.series.title}<span class="tome">· Tome ${mem.order}</span></div>` : '';
+    const card = document.createElement('a');
+    card.className = 'card';
+    card.href = 'Histoire.html?id=' + st.slug;
+    card.innerHTML = `
+      ${flag}
+      <div class="card-themes">${themesHtml}</div>
+      <h3>${st.title}</h3>
+      <p class="excerpt">${st.excerpt}</p>
+      <div class="card-tags">${tagsHtml}</div>
+      <div class="card-meta"><span>${st.author}</span><span class="rr">${ratingHtml(st)}<span class="read">${st.time} min</span></span></div>`;
+    card.appendChild(FeuilletsFav.heartButton('stories', st.slug, { onToggle: renderStories }));
+    grid.appendChild(card);
+  });
+}
+
+function renderSeries(){
+  const grid = document.getElementById('series-grid');
+  const empty = document.getElementById('series-empty');
+  const ids = FeuilletsFav.list('series');
+  const items = ids.map(id => FS.byId[id] || (window.FP && FP.seriesById(id))).filter(Boolean);
+  document.getElementById('series-count').textContent = items.length ? (items.length + (items.length>1?' séries':' série')) : '';
+  grid.innerHTML = '';
+  if(!items.length){ grid.hidden = true; empty.hidden = false; return; }
+  grid.hidden = false; empty.hidden = true;
+
+  items.forEach(ser => {
+    const themesHtml = ser.themes.map(t => `<span class="tlabel" style="color:${FC.THEME_COLOR[t]}">${t}</span>`).join('');
+    const tocHtml = ser.stories.map((s, i) => `<li><span class="tn">T${i+1}</span><span>${s.title}</span></li>`).join('');
+    const card = document.createElement('a');
+    card.className = 'card series-card';
+    card.href = 'Serie.html?id=' + ser.id;
+    card.innerHTML = `
+      <div class="series-tag">${BOOK_ICON}Série · ${ser.count} histoires</div>
+      <div class="card-themes">${themesHtml}</div>
+      <h3>${ser.title}</h3>
+      <p class="excerpt">${ser.description}</p>
+      <ol class="series-toc">${tocHtml}</ol>
+      <div class="card-meta"><span>${ser.author}</span><span class="rr">${ratingHtml(ser)}<span class="read">${ser.time} min</span></span></div>`;
+    card.appendChild(FeuilletsFav.heartButton('series', ser.id, { onToggle: renderSeries }));
+    grid.appendChild(card);
+  });
+}
+
+if(!FeuilletsFav.isLoggedIn()){
+  document.getElementById('signin').hidden = false;
+} else {
+  document.getElementById('content').hidden = false;
+  renderStories();
+  renderSeries();
+  // Ancre vers la section des séries (depuis le menu profil)
+  if(location.hash === '#series'){
+    const el = document.getElementById('series');
+    setTimeout(() => window.scrollTo({ top: Math.max(0, el.offsetTop - 16) }), 0);
+  }
+}
+</script>
+<script src="auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feuillets · Catalogue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1c1a18;
+    --bg-soft:#211f1c;
+    --ink:#f4f0ea;
+    --soft:#c7c0b6;
+    --muted:#8a837a;
+    --faint:#6f685f;
+    --line:#37322d;
+    --line-2:#46403a;
+    --accent:#c4774e;
+    --serif:"Playfair Display", Georgia, serif;
+    --book:"Lora", Georgia, serif;
+    --sans:"Mulish", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;}
+  .page{max-width:1120px;margin:0 auto;}
+  a{color:inherit;text-decoration:none;}
+
+  /* ---------- Header ---------- */
+  header{display:flex;align-items:center;gap:34px;padding:20px 22px;border-bottom:1px solid var(--line);}
+  .logo{font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.01em;line-height:1;}
+  .logo i{font-style:italic;font-weight:500;color:var(--accent);}
+  nav{display:flex;align-items:center;gap:30px;margin-left:6px;}
+  nav a{font-size:14.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;opacity:.92;transition:opacity .2s,color .2s;}
+  nav a:hover{color:var(--accent);opacity:1;}
+  nav a.active{color:var(--accent);opacity:1;}
+  .actions{margin-left:auto;display:flex;align-items:center;gap:20px;}
+  .search{background:none;border:none;color:var(--ink);cursor:pointer;display:flex;opacity:.9;transition:color .2s;}
+  .search:hover{color:var(--accent);}
+  .btn-line{font-family:var(--sans);border:1px solid var(--line);background:none;color:var(--ink);padding:13px 26px;font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,background .2s;}
+  .btn-line:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+  .btn-publish{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);border:1px solid var(--accent);background:var(--accent);color:#1c1a18;text-decoration:none;padding:13px 22px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s;}
+  .btn-publish:hover{background:#d4865c;border-color:#d4865c;}
+  .btn-publish svg{width:16px;height:16px;}
+
+  /* ---------- Catalogue head ---------- */
+  .cat-head{padding:42px 22px 34px;}
+  .kicker{font-size:12.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .cat-head h1{font-family:var(--serif);font-weight:800;font-size:46px;line-height:1.04;letter-spacing:-.01em;color:#fbf8f3;}
+  .cat-head p{font-family:var(--book);font-style:italic;font-size:18px;color:var(--soft);margin-top:14px;max-width:52ch;}
+
+  /* ---------- Body layout ---------- */
+  .frame{border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .catalog-body{display:grid;grid-template-columns:266px 1fr;}
+
+  /* ---------- Filter rail ---------- */
+  aside{border-right:1px solid var(--line);}
+  .rail{position:sticky;top:0;padding:30px 26px 38px;}
+  .rail-title{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;}
+  .rail-title h2{font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);}
+  .reset{background:none;border:none;color:var(--accent);font-family:var(--sans);font-size:12.5px;letter-spacing:.04em;cursor:pointer;padding:0;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .reset.show{opacity:1;pointer-events:auto;}
+  .reset:hover{text-decoration:underline;}
+
+  .search-field{display:flex;align-items:center;gap:9px;margin-top:18px;
+    border:1px solid var(--line-2);border-radius:2px;padding:10px 12px;transition:border-color .18s;}
+  .search-field:focus-within{border-color:var(--accent);}
+  .search-field > svg{color:var(--muted);flex:none;transition:color .18s;}
+  .search-field:focus-within > svg{color:var(--accent);}
+  .search-field input{flex:1;min-width:0;background:none;border:none;outline:none;
+    color:var(--ink);font-family:var(--sans);font-size:14px;letter-spacing:.01em;}
+  .search-field input::placeholder{color:var(--faint);}
+  .q-clear{display:none;background:none;border:none;color:var(--faint);font-size:18px;line-height:1;
+    cursor:pointer;padding:0 2px;flex:none;transition:color .18s;}
+  .q-clear:hover{color:var(--accent);}
+  .q-clear.show{display:block;}
+
+  .fgroup{margin-top:30px;}
+  .fgroup > h3{font-family:var(--serif);font-weight:700;font-size:19px;color:#fbf8f3;margin-bottom:16px;}
+
+  /* theme rows */
+  .theme-row{display:flex;align-items:center;gap:11px;width:100%;background:none;border:none;cursor:pointer;
+    font-family:var(--sans);text-align:left;padding:7px 0;color:var(--soft);transition:color .18s;}
+  .theme-row:hover{color:var(--ink);}
+  .theme-row .dot{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--c);background:transparent;flex:none;transition:background .18s,box-shadow .18s;}
+  .theme-row .name{font-size:15px;font-weight:500;letter-spacing:.01em;}
+  .theme-row .cnt{margin-left:auto;font-size:12.5px;color:var(--faint);font-variant-numeric:tabular-nums;}
+  .theme-row.on{color:#fbf8f3;}
+  .theme-row.on .dot{background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent);}
+  .theme-row.on .name{font-weight:600;}
+
+  /* characteristic chips */
+  .chips-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:.01em;color:var(--soft);
+    background:none;border:1px solid var(--line-2);border-radius:999px;padding:7px 13px;cursor:pointer;
+    transition:border-color .18s,color .18s,background .18s;}
+  .chip:hover{border-color:var(--accent);color:var(--ink);}
+  .chip.on{background:rgba(196,119,78,.16);border-color:var(--accent);color:#f6ddcd;}
+
+  /* rating filter */
+  .rating-opts{display:flex;flex-wrap:wrap;gap:8px;}
+  .ropt{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-family:var(--sans);font-size:13px;font-weight:500;
+    color:var(--soft);background:none;border:1px solid var(--line-2);border-radius:999px;padding:7px 13px;cursor:pointer;
+    font-variant-numeric:tabular-nums;transition:border-color .18s,color .18s,background .18s;}
+  .ropt .star{color:var(--faint);transition:color .18s;}
+  .ropt:hover{border-color:#e0b341;color:var(--ink);}
+  .ropt:hover .star{color:#e0b341;}
+  .ropt.on{background:rgba(224,179,65,.14);border-color:#e0b341;color:#f1dca5;}
+  .ropt.on .star{color:#e0b341;}
+
+  /* ---------- Results ---------- */
+  main{min-width:0;}
+  .results-bar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:18px 26px;border-bottom:1px solid var(--line);}
+  .count{font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+  .count b{color:var(--ink);font-weight:700;}
+  .active-chips{display:flex;flex-wrap:wrap;gap:8px;flex:1;}
+  .achip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--soft);
+    background:var(--bg-soft);border:1px solid var(--line-2);border-radius:999px;padding:5px 8px 5px 11px;cursor:pointer;transition:border-color .18s,color .18s;}
+  .achip .x{font-size:14px;line-height:1;color:var(--faint);}
+  .achip:hover{border-color:var(--accent);color:var(--ink);}
+  .achip:hover .x{color:var(--accent);}
+  .sortbox{display:flex;align-items:center;gap:9px;margin-left:auto;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .sortbox select{font-family:var(--sans);font-size:13px;color:var(--ink);background:var(--bg-soft);border:1px solid var(--line-2);
+    padding:9px 12px;cursor:pointer;border-radius:2px;letter-spacing:.02em;text-transform:none;}
+  .sortbox select:focus{outline:none;border-color:var(--accent);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:1px;background:var(--line);}
+  .card{background:var(--bg);padding:26px 26px 24px;display:flex;flex-direction:column;cursor:pointer;
+    transition:background .2s;position:relative;}
+  .card:hover{background:var(--bg-soft);}
+  .card-themes{display:flex;flex-wrap:wrap;gap:8px 12px;margin-bottom:14px;}
+  .tlabel{font-size:11.5px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;position:relative;}
+  .tlabel + .tlabel::before{content:"·";position:absolute;left:-9px;color:var(--faint);}
+  .card h3{font-family:var(--serif);font-weight:700;font-size:23px;line-height:1.16;color:#fbf8f3;margin-bottom:13px;}
+  .card .excerpt{font-family:var(--book);font-style:italic;font-size:15.5px;line-height:1.55;color:var(--soft);
+    margin-bottom:18px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+  .ttag{font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 9px;
+    transition:border-color .18s,color .18s;}
+  .ttag.match{border-color:var(--accent);color:#e0a981;}
+  .card-meta{margin-top:auto;font-size:13.5px;color:var(--muted);display:flex;align-items:center;gap:7px;}
+  .card-meta .rr{margin-left:auto;display:inline-flex;align-items:center;gap:11px;}
+  .card-meta .rating{display:inline-flex;align-items:center;gap:5px;color:var(--soft);font-variant-numeric:tabular-nums;}
+  .card-meta .rating .star{color:#e0b341;}
+  .card-meta .read{display:inline-flex;align-items:center;gap:6px;color:var(--faint);}
+  .card-meta .rr-new{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);}
+  .card .arrow{position:absolute;top:24px;right:24px;color:var(--faint);opacity:0;transform:translate(-4px,4px);
+    transition:opacity .2s,transform .2s;}
+  .card:hover .arrow{opacity:1;transform:translate(0,0);color:var(--accent);}
+
+  /* ---------- Bascule de vue ---------- */
+  .view-toggle{display:inline-flex;border:1px solid var(--line-2);border-radius:2px;overflow:hidden;flex:none;}
+  .view-toggle button{font-family:var(--sans);background:none;border:none;color:var(--muted);
+    padding:9px 17px;font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:color .18s,background .18s;}
+  .view-toggle button + button{border-left:1px solid var(--line-2);}
+  .view-toggle button:hover{color:var(--ink);}
+  .view-toggle button.on{background:rgba(196,119,78,.16);color:#f6ddcd;}
+
+  /* ---------- Badge série sur une carte histoire ---------- */
+  .series-flag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:13px;line-height:1.3;}
+  .series-flag svg{width:13px;height:13px;flex:none;}
+  .series-flag .tome{color:var(--muted);font-weight:500;}
+
+  /* ---------- Carte série ---------- */
+  .card.series-card .series-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .card.series-card .series-tag svg{width:14px;height:14px;}
+  .series-toc{list-style:none;margin:2px 0 20px;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .series-toc li{display:flex;align-items:baseline;gap:10px;font-family:var(--book);font-size:14.5px;line-height:1.35;color:var(--soft);}
+  .series-toc li .tn{font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--accent);flex:none;
+    border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);border-radius:3px;padding:1px 6px;position:relative;top:-1px;}
+
+  .empty{padding:80px 30px;text-align:center;}
+  .empty .e-title{font-family:var(--serif);font-style:italic;font-size:24px;color:var(--soft);margin-bottom:18px;}
+  .empty button{font-family:var(--sans);border:1px solid var(--line-2);background:none;color:var(--ink);
+    padding:12px 24px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,background .2s;}
+  .empty button:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+
+  footer{height:60px;}
+
+  @media (max-width:760px){
+    .catalog-body{grid-template-columns:1fr;}
+    aside{border-right:none;border-bottom:1px solid var(--line);}
+    .rail{position:static;}
+    nav{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header>
+    <a class="logo" href="Feuillets.html">Feui<i>llets</i></a>
+    <nav>
+      <a href="Catalogue.html">Le catalogue</a>
+      <a href="Auteurs.html">Auteurs</a>
+    </nav>
+    <div class="actions">
+      <a class="btn-publish" href="NouvellePublication.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        Publier
+      </a>
+      <a class="btn-line" href="Connexion.html">Connexion</a>
+    </div>
+  </header>
+
+  <!-- Catalogue head -->
+  <div class="cat-head">
+    <div class="kicker">Le catalogue</div>
+    <h1>Explorer les histoires</h1>
+    <p>Filtrez par thème et par envie de lecture — chaque récit porte ses propres couleurs et son atmosphère.</p>
+  </div>
+
+  <!-- Body -->
+  <div class="frame">
+    <div class="catalog-body">
+
+      <aside>
+        <div class="rail">
+          <div class="rail-title">
+            <h2>Filtrer</h2>
+            <button class="reset" id="reset">Tout effacer</button>
+          </div>
+
+          <div class="search-field">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+            <input id="q" type="text" placeholder="Rechercher un titre…" autocomplete="off" spellcheck="false">
+            <button class="q-clear" id="q-clear" aria-label="Effacer la recherche">×</button>
+          </div>
+
+          <div class="fgroup">
+            <h3>Thèmes</h3>
+            <div id="theme-list"></div>
+          </div>
+
+          <div class="fgroup">
+            <h3>Caractéristiques</h3>
+            <div class="chips-wrap" id="char-list"></div>
+          </div>
+
+          <div class="fgroup">
+            <h3>Note minimale</h3>
+            <div class="rating-opts" id="rating-list"></div>
+          </div>
+        </div>
+      </aside>
+
+      <main>
+        <div class="results-bar">
+          <div class="view-toggle" id="view-toggle">
+            <button data-view="stories" class="on">Histoires</button>
+            <button data-view="series">Séries</button>
+          </div>
+          <div class="count" id="count"></div>
+          <div class="active-chips" id="active-chips"></div>
+          <div class="sortbox">
+            <span>Trier</span>
+            <select id="sort">
+              <option value="featured">Coups de cœur</option>
+              <option value="rating">Mieux notées</option>
+              <option value="az">Titre (A → Z)</option>
+              <option value="time-asc">Lecture la plus courte</option>
+              <option value="time-desc">Lecture la plus longue</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid" id="grid"></div>
+        <div class="empty" id="empty" hidden>
+          <div class="e-title">Aucune histoire ne correspond à ces filtres.</div>
+          <button id="empty-reset">Réinitialiser les filtres</button>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <footer></footer>
+</div>
+
+<script src="series.js"></script>
+<script src="publications.js"></script>
+<script src="favoris.js"></script>
+<script>
+const THEMES = [
+  {id:'Polar',           color:'#c4774e'},
+  {id:'Thriller',        color:'#c25c4a'},
+  {id:'Science-fiction', color:'#6791c4'},
+  {id:'Fantasy',         color:'#b277c2'},
+  {id:'Roman',           color:'#c97a9c'},
+  {id:'Témoignage',      color:'#5ea283'},
+  {id:'Nouvelle',        color:'#8a9d6a'},
+];
+const THEME_COLOR = Object.fromEntries(THEMES.map(t=>[t.id,t.color]));
+
+const CHARS = [
+  'Atmosphérique','Rythme intense','Fin inattendue','Huis clos',
+  'Première personne','Personnage féminin','Faits réels',
+  'Mélancolique','Lumineux','Lecture courte'
+];
+
+const STORIES = [
+  {title:"L'Architecte des Ombres", author:"Jean-Luc Breton", time:35,
+   themes:['Polar','Thriller'], chars:['Atmosphérique','Rythme intense','Personnage féminin'],
+   excerpt:"Dans une ville brumeuse du Nord, l'inspectrice Vera Kalm traque un tueur qui transforme chaque scène de crime en tableau."},
+  {title:"Le Dernier Train pour Minuit", author:"Élise Morvan", time:12,
+   themes:['Thriller'], chars:['Atmosphérique','Huis clos','Première personne'],
+   excerpt:"Elle ne devait jamais monter dans ce train. Pourtant, le quai 9 l'attendait, silencieux comme un secret."},
+  {title:"Les Cendres du Lendemain", author:"Claire Fontaine", time:8,
+   themes:['Roman'], chars:['Mélancolique','Personnage féminin','Faits réels'],
+   excerpt:"Une femme retrouve les lettres de sa mère disparue, et avec elles, une vérité qu'elle n'était pas prête à entendre."},
+  {title:"Mémoire Vive", author:"Thomas Leray", time:15,
+   themes:['Science-fiction'], chars:['Rythme intense','Fin inattendue'],
+   excerpt:"En 2041, les souvenirs se vendent au marché noir. Marcus veut récupérer les siens, coûte que coûte."},
+  {title:"Kaboul, l'été de mes quinze ans", author:"Nadia Ahmadi", time:20,
+   themes:['Témoignage'], chars:['Faits réels','Première personne','Mélancolique'],
+   excerpt:"Un récit intime sur l'exil, la reconstruction et la résilience d'une adolescente devenue femme entre deux cultures."},
+  {title:"La Gardienne du Phare", author:"Amélie Voss", time:10,
+   themes:['Fantasy'], chars:['Atmosphérique','Personnage féminin','Lumineux'],
+   excerpt:"Sur une île que les cartes ont oubliée, une jeune femme veille sur une lumière qui ne devrait pas exister."},
+  {title:"Vengeance à Montmartre", author:"Marc Duval", time:18,
+   themes:['Polar'], chars:['Rythme intense','Fin inattendue'],
+   excerpt:"Trente ans après, un nom resurgit dans un carnet jauni. Pour le commissaire Le Goff, l'affaire n'a jamais été close."},
+  {title:"Le Dernier Été à Paros", author:"Sophie Arnaud", time:12,
+   themes:['Nouvelle','Roman'], chars:['Lumineux','Lecture courte','Personnage féminin'],
+   excerpt:"Deux sœurs, une maison blanche au bord de l'Égée, et l'été où tout, doucement, a basculé."},
+  {title:"Les Enfants du Vide", author:"Paul Renard", time:22,
+   themes:['Science-fiction'], chars:['Atmosphérique','Mélancolique','Fin inattendue'],
+   excerpt:"À bord d'un vaisseau-génération, la dernière génération née en route apprend qu'aucune planète ne les attend."},
+  {title:"La Maison aux Volets Clos", author:"Hélène Marquet", time:16,
+   themes:['Thriller','Polar'], chars:['Huis clos','Fin inattendue','Atmosphérique'],
+   excerpt:"Six invités, une demeure isolée par la neige, et un hôte qui n'apparaît jamais. La nuit sera longue."},
+  {title:"Le Cartographe des Rêves", author:"Julien Sorel", time:25,
+   themes:['Fantasy'], chars:['Atmosphérique','Lumineux','Première personne'],
+   excerpt:"On l'engage pour dessiner les territoires que les dormeurs visitent. Une carte, pourtant, refuse d'être achevée."},
+  {title:"Lettres à personne", author:"Camille Roy", time:9,
+   themes:['Roman','Témoignage'], chars:['Mélancolique','Première personne','Lecture courte'],
+   excerpt:"Chaque soir, elle écrit une lettre qu'elle n'enverra jamais. Un an plus tard, quelqu'un commence à répondre."},
+  {title:"La Langue de l'autre", author:"Nadia Ahmadi", time:14,
+   themes:['Témoignage'], chars:['Première personne','Faits réels','Lumineux'],
+   excerpt:"Apprendre à penser, à rêver, à aimer dans une langue qui n'était pas la sienne — et y trouver, un jour, une seconde naissance."},
+  {title:"La Marchande de Coquillages", author:"Sophie Arnaud", time:9,
+   themes:['Nouvelle'], chars:['Lumineux','Lecture courte','Mélancolique'],
+   excerpt:"Sur le port, une vieille femme vend des coquillages et, à qui sait écouter, le bruit d'étés que l'on croyait perdus."},
+  {title:"Le Vernissage", author:"Jean-Luc Breton", time:28,
+   themes:['Polar','Thriller'], chars:['Atmosphérique','Fin inattendue','Rythme intense'],
+   excerpt:"Le soir du vernissage, une toile de trop est accrochée au mur. Personne ne l'a peinte. Tout le monde s'y reconnaît."},
+  {title:"Le Témoin du Quai des Orfèvres", author:"Marc Duval", time:16,
+   themes:['Polar'], chars:['Rythme intense','Atmosphérique'],
+   excerpt:"Un seul témoin, un seul aveu, et trente années d'archives qui, soudain, ne racontent plus la même histoire."},
+  {title:"La Chambre du Haut", author:"Claire Fontaine", time:11,
+   themes:['Roman'], chars:['Mélancolique','Personnage féminin'],
+   excerpt:"On ferme certaines portes pour ne pas réveiller les morts. Trente ans après, elle décide enfin d'ouvrir celle du haut."},
+  {title:"Le Dernier Algorithme", author:"Thomas Leray", time:18,
+   themes:['Science-fiction'], chars:['Rythme intense','Atmosphérique'],
+   excerpt:"La première intelligence à se savoir mortelle n'a pas demandé à vivre plus longtemps. Elle a demandé à comprendre pourquoi."},
+  {title:"L'Ascenseur", author:"Hélène Marquet", time:13,
+   themes:['Thriller','Polar'], chars:['Huis clos','Rythme intense','Atmosphérique'],
+   excerpt:"Entre le huitième et le neuvième étage, l'ascenseur s'est immobilisé. Ils étaient quatre. L'un d'eux n'aurait jamais dû monter."},
+  {title:"Chambre 313", author:"Élise Morvan", time:11,
+   themes:['Thriller'], chars:['Atmosphérique','Première personne','Huis clos'],
+   excerpt:"L'hôtel n'avait pas de treizième étage. Pourtant, sa clé portait le numéro 313, et l'ascenseur, lui, savait où aller."},
+  {title:"La Dernière Sonde", author:"Paul Renard", time:19,
+   themes:['Science-fiction'], chars:['Mélancolique','Atmosphérique'],
+   excerpt:"Lancée avant l'extinction, une sonde continue d'émettre vers une Terre qui ne répond plus. Quelqu'un, pourtant, l'écoute encore."},
+  {title:"Le Répondeur", author:"Camille Roy", time:8,
+   themes:['Roman','Témoignage'], chars:['Mélancolique','Première personne','Lecture courte'],
+   excerpt:"Elle n'a jamais effacé le message. Chaque soir, elle compose le numéro, juste pour entendre, encore, le timbre d'une voix éteinte."},
+  {title:"L'Horloger du Crépuscule", author:"Julien Sorel", time:21,
+   themes:['Fantasy'], chars:['Atmosphérique','Lumineux'],
+   excerpt:"Dans son atelier sans fenêtre, un horloger répare le temps des autres. Le sien, depuis longtemps, s'est arrêté à six heures."},
+  {title:"La Tisseuse de Marées", author:"Amélie Voss", time:12,
+   themes:['Fantasy'], chars:['Atmosphérique','Personnage féminin','Lumineux'],
+   excerpt:"Au bout de la jetée, une femme tisse la mer comme une étoffe. Chaque vague qu'elle noue éloigne un peu plus celui qu'elle attend."},
+  {title:"La Consigne 47", author:"Élise Morvan", time:10,
+   themes:['Thriller'], chars:['Atmosphérique','Première personne'],
+   excerpt:"Dans le hall désert de la gare, un casier que personne n'a loué s'ouvre chaque nuit à la même heure — et chaque matin, il est de nouveau verrouillé."},
+  {title:"Onze Heures Onze", author:"Élise Morvan", time:9,
+   themes:['Thriller'], chars:['Atmosphérique','Mélancolique'],
+   excerpt:"Chaque nuit, sa montre s'arrête à 23 h 11. Et l'on frappe trois coups à une porte que le plan de l'hôtel ne mentionne nulle part."},
+  {title:"La Première Graine", author:"Paul Renard", time:17,
+   themes:['Science-fiction'], chars:['Atmosphérique','Mélancolique','Lumineux'],
+   excerpt:"On lui avait confié une graine et un siècle. Sur Erebus, monde de cendre et de gel, elle planta la première — sachant qu'elle ne verrait jamais l'arbre."},
+  {title:"La Dernière Récolte", author:"Paul Renard", time:20,
+   themes:['Science-fiction'], chars:['Atmosphérique','Mélancolique','Fin inattendue'],
+   excerpt:"Quatre générations plus tard, Erebus a des forêts. Mais le jour de la première récolte, le monde découvre qu'il attendait, lui aussi, quelque chose des jardiniers."},
+  {title:"Le Phare de Proxima", author:"Paul Renard", time:16,
+   themes:['Science-fiction'], chars:['Atmosphérique','Mélancolique'],
+   excerpt:"À mi-chemin entre deux étoiles, une balise solitaire répète le même message depuis mille ans. Le jour où elle se tait, un vaisseau, enfin, change de cap."},
+];
+
+const state = { themes:new Set(), chars:new Set(), sort:'featured', query:'', minRating:0, view:'stories' };
+
+// lowercase + strip accents for forgiving title search
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+const RATINGS = {
+  "L'Architecte des Ombres":4.8,
+  "Le Dernier Train pour Minuit":4.7,
+  "Les Cendres du Lendemain":4.5,
+  "Mémoire Vive":4.6,
+  "Kaboul, l'été de mes quinze ans":4.9,
+  "La Gardienne du Phare":4.4,
+  "Vengeance à Montmartre":4.5,
+  "Le Dernier Été à Paros":4.6,
+  "Les Enfants du Vide":4.7,
+  "La Maison aux Volets Clos":4.8,
+  "Le Cartographe des Rêves":4.5,
+  "Lettres à personne":4.7,
+  "La Langue de l'autre":4.7,
+  "La Marchande de Coquillages":4.5,
+  "Le Vernissage":4.6,
+  "Le Témoin du Quai des Orfèvres":4.4,
+  "La Chambre du Haut":4.4,
+  "Le Dernier Algorithme":4.5,
+  "L'Ascenseur":4.7,
+  "Chambre 313":4.6,
+  "La Dernière Sonde":4.6,
+  "Le Répondeur":4.6,
+  "L'Horloger du Crépuscule":4.4,
+  "La Tisseuse de Marées":4.3,
+  "La Consigne 47":4.6,
+  "Onze Heures Onze":4.5,
+  "La Première Graine":4.6,
+  "La Dernière Récolte":4.7,
+  "Le Phare de Proxima":4.5
+};
+const ratingOf = t => RATINGS[t] || 0;
+const fmtRating = r => r.toFixed(1).replace('.', ',');
+const RATING_STEPS = [4.5, 4.6, 4.7, 4.8];
+
+const SLUGS = {
+  "L'Architecte des Ombres":"l-architecte-des-ombres",
+  "Le Dernier Train pour Minuit":"le-dernier-train-pour-minuit",
+  "Les Cendres du Lendemain":"les-cendres-du-lendemain",
+  "Mémoire Vive":"memoire-vive",
+  "Kaboul, l'été de mes quinze ans":"kaboul-quinze-ans",
+  "La Gardienne du Phare":"la-gardienne-du-phare",
+  "Vengeance à Montmartre":"vengeance-a-montmartre",
+  "Le Dernier Été à Paros":"le-dernier-ete-a-paros",
+  "Les Enfants du Vide":"les-enfants-du-vide",
+  "La Maison aux Volets Clos":"la-maison-aux-volets-clos",
+  "Le Cartographe des Rêves":"le-cartographe-des-reves",
+  "Lettres à personne":"lettres-a-personne",
+  "La Langue de l'autre":"la-langue-de-l-autre",
+  "La Marchande de Coquillages":"la-marchande-de-coquillages",
+  "Le Vernissage":"le-vernissage",
+  "Le Témoin du Quai des Orfèvres":"le-temoin-du-quai",
+  "La Chambre du Haut":"la-chambre-du-haut",
+  "Le Dernier Algorithme":"le-dernier-algorithme",
+  "L'Ascenseur":"l-ascenseur",
+  "Chambre 313":"chambre-313",
+  "La Dernière Sonde":"la-derniere-sonde",
+  "Le Répondeur":"le-repondeur",
+  "L'Horloger du Crépuscule":"l-horloger-du-crepuscule",
+  "La Tisseuse de Marées":"la-tisseuse-de-marees",
+  "La Consigne 47":"la-consigne-47",
+  "Onze Heures Onze":"onze-heures-onze",
+  "La Première Graine":"la-premiere-graine",
+  "La Dernière Récolte":"la-derniere-recolte",
+  "Le Phare de Proxima":"le-phare-de-proxima"
+};
+
+// Fusion des publications d'auteurs avec le catalogue statique
+const STORY_ITEMS = STORIES.map(s => Object.assign({}, s, { slug: SLUGS[s.title], rating: ratingOf(s.title) }))
+  .concat(window.FP ? FP.catalogStories() : []);
+const SERIES_ITEMS = FS.SERIES.concat(window.FP ? FP.catalogSeries() : []);
+function ratingHtml(it){
+  return it.rating == null
+    ? '<span class="rr-new">Nouveau</span>'
+    : `<span class="rating"><span class="star">★</span> ${fmtRating(it.rating)}</span>`;
+}
+function memberOf(slug){ return (window.FS && FS.byStory[slug]) || (window.FP && FP.byStory(slug)) || null; }
+
+function matches(s){
+  const tOk = state.themes.size===0 || s.themes.some(t=>state.themes.has(t));
+  const cOk = state.chars.size===0  || [...state.chars].every(c=>s.chars.includes(c));
+  const qOk = state.query==='' || norm(s.title).includes(state.query);
+  const rOk = s.rating == null || s.rating >= state.minRating;
+  return tOk && cOk && qOk && rOk;
+}
+
+// accesseurs unifiés histoires / séries
+function currentItems(){ return state.view==='series' ? SERIES_ITEMS : STORY_ITEMS; }
+function itemRating(it){ return it.rating == null ? -1 : it.rating; }
+function itemTime(it){ return it.time; }
+
+// dynamic theme count given every active filter except the theme selection itself
+function themeCount(theme){
+  return currentItems().filter(s=>{
+    const cOk = state.chars.size===0 || [...state.chars].every(c=>s.chars.includes(c));
+    const qOk = state.query==='' || norm(s.title).includes(state.query);
+    const rOk = s.rating == null || s.rating >= state.minRating;
+    return cOk && qOk && rOk && s.themes.includes(theme);
+  }).length;
+}
+
+function renderRail(){
+  const tl = document.getElementById('theme-list');
+  tl.innerHTML = '';
+  THEMES.forEach(t=>{
+    const on = state.themes.has(t.id);
+    const b = document.createElement('button');
+    b.className = 'theme-row' + (on?' on':'');
+    b.style.setProperty('--c', t.color);
+    b.innerHTML = `<span class="dot"></span><span class="name">${t.id}</span><span class="cnt">${themeCount(t.id)}</span>`;
+    b.onclick = ()=>{ on?state.themes.delete(t.id):state.themes.add(t.id); render(); };
+    tl.appendChild(b);
+  });
+
+  const cl = document.getElementById('char-list');
+  cl.innerHTML = '';
+  CHARS.forEach(c=>{
+    const on = state.chars.has(c);
+    const b = document.createElement('button');
+    b.className = 'chip' + (on?' on':'');
+    b.textContent = c;
+    b.onclick = ()=>{ on?state.chars.delete(c):state.chars.add(c); render(); };
+    cl.appendChild(b);
+  });
+
+  const rl = document.getElementById('rating-list');
+  rl.innerHTML = '';
+  RATING_STEPS.forEach(r=>{
+    const on = state.minRating===r;
+    const b = document.createElement('button');
+    b.className = 'ropt' + (on?' on':'');
+    b.innerHTML = `<span class="star">★</span>${fmtRating(r)} +`;
+    b.onclick = ()=>{ state.minRating = on ? 0 : r; render(); };
+    rl.appendChild(b);
+  });
+}
+
+function renderActiveChips(){
+  const box = document.getElementById('active-chips');
+  box.innerHTML = '';
+  const items = [...state.themes].map(t=>({type:'t',val:t})).concat([...state.chars].map(c=>({type:'c',val:c})));
+  if(state.minRating>0) items.push({type:'r', val:'Note ≥ '+fmtRating(state.minRating)});
+  items.forEach(it=>{
+    const chip = document.createElement('button');
+    chip.className = 'achip';
+    chip.innerHTML = `<span>${it.val}</span><span class="x">×</span>`;
+    chip.onclick = ()=>{
+      if(it.type==='t') state.themes.delete(it.val);
+      else if(it.type==='c') state.chars.delete(it.val);
+      else state.minRating = 0;
+      render();
+    };
+    box.appendChild(chip);
+  });
+  const any = state.themes.size+state.chars.size>0 || state.query!=='' || state.minRating>0;
+  document.getElementById('reset').classList.toggle('show', any);
+}
+
+function sortList(list){
+  const arr = list.slice();
+  if(state.sort==='az') arr.sort((a,b)=>a.title.localeCompare(b.title,'fr'));
+  else if(state.sort==='rating') arr.sort((a,b)=>itemRating(b)-itemRating(a));
+  else if(state.sort==='time-asc') arr.sort((a,b)=>a.time-b.time);
+  else if(state.sort==='time-desc') arr.sort((a,b)=>b.time-a.time);
+  return arr;
+}
+
+const CARD_ARROW = `<span class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="8 7 17 7 17 16"></polyline></svg></span>`;
+const BOOK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a2 2 0 0 1 2 2v14"></path><path d="M8 4v16"></path><path d="M20 7v13H6"></path></svg>`;
+
+function renderStoryCard(s){
+  const grid = document.getElementById('grid');
+  const themesHtml = s.themes.map(t=>`<span class="tlabel" style="color:${THEME_COLOR[t]}">${t}</span>`).join('');
+  const tagsHtml = s.chars.map(c=>{
+    const m = state.chars.has(c) ? ' match' : '';
+    return `<span class="ttag${m}">${c}</span>`;
+  }).join('');
+  const slug = s.slug || SLUGS[s.title] || '';
+  const mem = memberOf(slug);
+  const flag = mem ? `<div class="series-flag">${BOOK_ICON}Série · ${mem.series.title}<span class="tome">· Tome ${mem.order}</span></div>` : '';
+  const card = document.createElement('a');
+  card.className = 'card';
+  card.href = 'Histoire.html?id=' + slug;
+  card.innerHTML = `
+    ${CARD_ARROW}
+    ${flag}
+    <div class="card-themes">${themesHtml}</div>
+    <h3>${s.title}</h3>
+    <p class="excerpt">${s.excerpt}</p>
+    <div class="card-tags">${tagsHtml}</div>
+    <div class="card-meta"><span>${s.author}</span><span class="rr">${ratingHtml(s)}<span class="read">${s.time} min</span></span></div>`;
+  if(window.FeuilletsFav && FeuilletsFav.isLoggedIn() && slug) card.appendChild(FeuilletsFav.heartButton('stories', slug));
+  grid.appendChild(card);
+}
+
+function renderSeriesCard(ser){
+  const grid = document.getElementById('grid');
+  const themesHtml = ser.themes.map(t=>`<span class="tlabel" style="color:${THEME_COLOR[t]}">${t}</span>`).join('');
+  const tocHtml = ser.stories.map((st,i)=>`<li><span class="tn">T${i+1}</span><span>${st.title}</span></li>`).join('');
+  const card = document.createElement('a');
+  card.className = 'card series-card';
+  card.href = 'Serie.html?id=' + ser.id;
+  card.innerHTML = `
+    ${CARD_ARROW}
+    <div class="series-tag">${BOOK_ICON}Série · ${ser.count} histoire${ser.count>1?'s':''}</div>
+    <div class="card-themes">${themesHtml}</div>
+    <h3>${ser.title}</h3>
+    <p class="excerpt">${ser.description}</p>
+    <ol class="series-toc">${tocHtml}</ol>
+    <div class="card-meta"><span>${ser.author}</span><span class="rr">${ratingHtml(ser)}<span class="read">${ser.time} min</span></span></div>`;
+  if(window.FeuilletsFav && FeuilletsFav.isLoggedIn()) card.appendChild(FeuilletsFav.heartButton('series', ser.id));
+  grid.appendChild(card);
+}
+
+function renderGrid(){
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const list = sortList(currentItems().filter(matches));
+
+  const noun = state.view==='series'
+    ? (list.length>1?'séries':'série')
+    : (list.length>1?'histoires':'histoire');
+  document.getElementById('count').innerHTML = `<b>${list.length}</b> ${noun}`;
+
+  grid.innerHTML = '';
+  if(list.length===0){ grid.hidden=true; empty.hidden=false; return; }
+  grid.hidden=false; empty.hidden=true;
+
+  if(state.view==='series') list.forEach(renderSeriesCard);
+  else list.forEach(renderStoryCard);
+}
+
+function render(){ renderRail(); renderActiveChips(); renderGrid(); }
+
+const qInput = document.getElementById('q');
+const qClear = document.getElementById('q-clear');
+function clearAll(){ state.themes.clear(); state.chars.clear(); state.query=''; state.minRating=0; qInput.value=''; qClear.classList.remove('show'); render(); }
+
+document.getElementById('sort').onchange = e=>{ state.sort=e.target.value; renderGrid(); };
+document.getElementById('reset').onclick = clearAll;
+document.getElementById('empty-reset').onclick = clearAll;
+
+qInput.addEventListener('input', e=>{
+  state.query = norm(e.target.value.trim());
+  qClear.classList.toggle('show', e.target.value.length>0);
+  render();
+});
+qClear.onclick = ()=>{ qInput.value=''; state.query=''; qClear.classList.remove('show'); render(); qInput.focus(); };
+
+// Bascule Histoires / Séries
+document.querySelectorAll('#view-toggle button').forEach(b=>{
+  b.onclick = ()=>{
+    if(state.view===b.dataset.view) return;
+    state.view = b.dataset.view;
+    syncViewToggle();
+    render();
+  };
+});
+function syncViewToggle(){
+  document.querySelectorAll('#view-toggle button').forEach(x=>x.classList.toggle('on', x.dataset.view===state.view));
+}
+
+// Pre-apply filters from URL (?themes=Thriller,Polar&chars=Atmosphérique,… &view=series)
+(function seedFromUrl(){
+  const p = new URLSearchParams(location.search);
+  const v = p.get('view');
+  if(v==='series') state.view='series';
+  const t = p.get('themes');
+  if(t) t.split(',').forEach(v=>{ v=decodeURIComponent(v.trim()); if(THEME_COLOR[v]) state.themes.add(v); });
+  const c = p.get('chars');
+  if(c) c.split(',').forEach(v=>{ v=decodeURIComponent(v.trim()); if(CHARS.includes(v)) state.chars.add(v); });
+})();
+
+syncViewToggle();
+render();
+</script>
+<script src="auth.js"></script>
+</body>
+</html>

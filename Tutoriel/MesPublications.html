@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feuillets · Mes publications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1c1a18;--bg-soft:#211f1c;--ink:#f4f0ea;--soft:#c7c0b6;--muted:#8a837a;--faint:#6f685f;
+    --line:#37322d;--line-2:#46403a;--accent:#c4774e;
+    --serif:"Playfair Display", Georgia, serif;--book:"Lora", Georgia, serif;--sans:"Mulish", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;}
+  a{color:inherit;text-decoration:none;}
+  .page{max-width:1120px;margin:0 auto;}
+
+  header{display:flex;align-items:center;gap:34px;padding:20px 22px;border-bottom:1px solid var(--line);}
+  .logo{font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.01em;line-height:1;}
+  .logo i{font-style:italic;font-weight:500;color:var(--accent);}
+  nav{display:flex;align-items:center;gap:30px;margin-left:6px;}
+  nav a{font-size:14.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;opacity:.92;transition:opacity .2s,color .2s;}
+  nav a:hover{color:var(--accent);opacity:1;}
+  .actions{margin-left:auto;display:flex;align-items:center;gap:20px;}
+  .btn-line{font-family:var(--sans);border:1px solid var(--line);background:none;color:var(--ink);padding:13px 26px;font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,background .2s;}
+  .btn-line:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+  .btn-publish{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);border:1px solid var(--accent);background:var(--accent);color:#1c1a18;text-decoration:none;padding:13px 22px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s;}
+  .btn-publish:hover{background:#d4865c;border-color:#d4865c;}
+  .btn-publish svg{width:16px;height:16px;}
+
+  .lib-head{padding:42px 22px 34px;}
+  .kicker{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .kicker svg{width:15px;height:15px;}
+  .lib-head h1{font-family:var(--serif);font-weight:800;font-size:46px;line-height:1.04;letter-spacing:-.01em;color:#fbf8f3;}
+  .lib-head p{font-family:var(--book);font-style:italic;font-size:18px;color:var(--soft);margin-top:14px;max-width:56ch;}
+
+  .lib-section{padding:0 22px;}
+  .lib-section + .lib-section{margin-top:54px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;padding:16px 0 18px;border-bottom:1px solid var(--line);}
+  .sec-head h2{font-family:var(--serif);font-weight:700;font-size:26px;color:#fbf8f3;flex:none;}
+  .sec-count{font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .sec-count:empty{display:none;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-top:none;}
+  .card{background:var(--bg);padding:26px 26px 24px;display:flex;flex-direction:column;position:relative;transition:background .2s;}
+  .card:hover{background:var(--bg-soft);}
+  .pub-status{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-bottom:14px;}
+  .pub-status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:none;}
+  .pub-status.live{color:#7fae8f;}
+  .pub-status.draft{color:#cda24a;}
+  .card-themes{display:flex;flex-wrap:wrap;gap:8px 12px;margin-bottom:14px;}
+  .tlabel{font-size:11.5px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;position:relative;}
+  .tlabel + .tlabel::before{content:"·";position:absolute;left:-9px;color:var(--faint);}
+  .card h3{font-family:var(--serif);font-weight:700;font-size:23px;line-height:1.16;color:#fbf8f3;margin-bottom:13px;}
+  .card .excerpt{font-family:var(--book);font-style:italic;font-size:15.5px;line-height:1.55;color:var(--soft);margin-bottom:18px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .card .excerpt:empty{display:none;}
+  .card-meta{margin-top:auto;font-size:13.5px;color:var(--muted);display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .card-meta .dot{color:var(--faint);}
+  .card .arrow{position:absolute;top:24px;right:24px;color:var(--faint);opacity:0;transform:translate(-4px,4px);transition:opacity .2s,transform .2s;}
+  .card:hover .arrow{opacity:1;transform:translate(0,0);color:var(--accent);}
+
+  .series-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .series-tag svg{width:14px;height:14px;}
+  .series-toc{list-style:none;margin:2px 0 20px;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .series-toc li{display:flex;align-items:baseline;gap:10px;font-family:var(--book);font-size:14.5px;line-height:1.35;color:var(--soft);}
+  .series-toc li .tn{font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--accent);flex:none;border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);border-radius:3px;padding:1px 6px;position:relative;top:-1px;}
+  .series-toc.empty li{color:var(--faint);font-style:italic;}
+
+  /* actions sur les cartes */
+  .card-actions{display:flex;align-items:center;gap:8px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line);}
+  .act{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-size:12.5px;font-weight:600;letter-spacing:.03em;
+    border:1px solid var(--line-2);background:none;color:var(--soft);padding:9px 13px;border-radius:2px;cursor:pointer;text-decoration:none;
+    transition:border-color .18s,color .18s,background .18s;}
+  .act svg{width:14px;height:14px;}
+  .act:hover{border-color:var(--accent);color:#f6ddcd;background:rgba(196,119,78,.08);}
+  .act.view{margin-right:auto;}
+  .act.del{color:var(--muted);}
+  .act.del:hover{border-color:#c2543f;color:#e08068;background:rgba(194,84,63,.1);}
+
+  /* tableau de bord (totaux) */
+  .dash{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);margin-bottom:46px;}
+  .dash[hidden]{display:none;}
+  .dash .d{padding:24px 24px 22px;border-right:1px solid var(--line);}
+  .dash .d:last-child{border-right:none;}
+  .dash .dv{font-family:var(--serif);font-weight:700;font-size:31px;color:#fbf8f3;line-height:1;font-variant-numeric:tabular-nums;}
+  .dash .dl{font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:11px;display:flex;align-items:center;gap:7px;}
+  .dash .dl svg{width:14px;height:14px;color:var(--accent);flex:none;}
+
+  /* statistiques par carte */
+  .card-stats{display:flex;gap:20px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
+  .card-stats .cstat{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);}
+  .card-stats .cstat svg{width:15px;height:15px;color:var(--accent);opacity:.9;flex:none;}
+  .card-stats .cstat b{color:var(--soft);font-weight:700;font-variant-numeric:tabular-nums;}
+  .card-stats + .card-actions{border-top:none;margin-top:14px;padding-top:0;}
+
+  /* popin de confirmation */
+  .modal-overlay{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:rgba(12,11,10,.74);animation:overlay-in .16s ease;}
+  .modal-overlay[hidden]{display:none;}
+  @keyframes overlay-in{from{opacity:0;}to{opacity:1;}}
+  .modal{background:var(--bg-soft);border:1px solid var(--line-2);max-width:460px;width:100%;padding:32px 30px 26px;
+    box-shadow:0 30px 80px rgba(0,0,0,.55);animation:modal-in .2s cubic-bezier(.2,.7,.3,1);}
+  @keyframes modal-in{from{opacity:0;transform:translateY(14px) scale(.98);}to{opacity:1;transform:none;}}
+  .modal .m-ic{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+    color:#e08068;background:rgba(194,84,63,.14);border:1px solid color-mix(in srgb,#c2543f 50%,transparent);}
+  .modal .m-ic svg{width:22px;height:22px;}
+  .modal h3{font-family:var(--serif);font-weight:700;font-size:24px;color:#fbf8f3;margin-bottom:11px;line-height:1.15;}
+  .modal p{font-size:15px;color:var(--soft);line-height:1.55;}
+  .modal p b{color:#fbf8f3;}
+  .modal .m-note{font-size:13.5px;color:var(--muted);font-family:var(--book);font-style:italic;margin:12px 0 26px;}
+  .modal-actions{display:flex;gap:12px;justify-content:flex-end;}
+  .modal-actions button{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.06em;padding:13px 22px;cursor:pointer;border-radius:2px;
+    transition:background .18s,border-color .18s,color .18s;}
+  .btn-cancel{background:none;border:1px solid var(--line-2);color:var(--soft);}
+  .btn-cancel:hover{border-color:var(--soft);color:var(--ink);}
+  .btn-danger{background:#c2543f;border:1px solid #c2543f;color:#fbf3ee;}
+  .btn-danger:hover{background:#d3604a;border-color:#d3604a;}
+
+  .empty{border:1px solid var(--line);border-top:none;padding:58px 30px;text-align:center;}
+  .empty .e-title{font-family:var(--serif);font-style:italic;font-size:21px;color:var(--soft);margin-bottom:8px;}
+  .empty .e-sub{font-size:14.5px;color:var(--muted);margin-bottom:24px;}
+  .empty a{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);border:1px solid var(--line-2);background:none;color:var(--ink);padding:12px 22px;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;transition:border-color .2s,background .2s,gap .2s;}
+  .empty a:hover{border-color:var(--accent);background:rgba(196,119,78,.08);gap:13px;}
+
+  .signin{margin:30px 22px 0;border:1px solid var(--line);padding:70px 30px;text-align:center;background:radial-gradient(120% 130% at 50% 0%, rgba(196,119,78,.06), transparent 62%);}
+  .signin .s-ic{width:54px;height:54px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:22px;color:var(--accent);background:rgba(196,119,78,.13);border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);}
+  .signin .s-ic svg{width:26px;height:26px;}
+  .signin h2{font-family:var(--serif);font-weight:700;font-size:30px;color:#fbf8f3;margin-bottom:12px;}
+  .signin p{font-family:var(--book);font-style:italic;font-size:17px;color:var(--soft);max-width:46ch;margin:0 auto 28px;}
+  .signin a{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);background:var(--accent);border:1px solid var(--accent);color:#1c1a18;padding:14px 26px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:background .18s,border-color .18s;}
+  .signin a:hover{background:#d4865c;border-color:#d4865c;}
+
+  footer{height:70px;}
+  @media (max-width:620px){ nav{display:none;} .lib-head h1{font-size:36px;} .btn-publish span.lbl{display:none;} }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <a class="logo" href="Feuillets.html">Feui<i>llets</i></a>
+    <nav>
+      <a href="Catalogue.html">Le catalogue</a>
+      <a href="Auteurs.html">Auteurs</a>
+    </nav>
+    <div class="actions">
+      <a class="btn-publish" href="NouvellePublication.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        <span class="lbl">Publier</span>
+      </a>
+      <a class="btn-line" href="Connexion.html">Connexion</a>
+    </div>
+  </header>
+
+  <div class="lib-head">
+    <div class="kicker">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+      Espace auteur
+    </div>
+    <h1>Mes publications</h1>
+    <p>Les histoires et les séries que vous avez publiées. Une série n'apparaît dans le catalogue qu'une fois qu'elle contient au moins une histoire.</p>
+  </div>
+
+  <div class="signin" id="signin" hidden>
+    <div class="s-ic">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+    </div>
+    <h2>Connectez-vous pour voir vos publications</h2>
+    <p>Vos histoires et vos séries publiées sont rattachées à votre compte.</p>
+    <a href="Connexion.html">Se connecter <span>→</span></a>
+  </div>
+
+  <div id="content" hidden>
+    <div class="dash" id="dash" hidden></div>
+
+    <section class="lib-section">
+      <div class="sec-head"><h2>Mes histoires</h2><span class="sec-count" id="stories-count"></span></div>
+      <div class="grid" id="stories-grid"></div>
+      <div class="empty" id="stories-empty" hidden>
+        <div class="e-title">Vous n'avez pas encore publié d'histoire.</div>
+        <div class="e-sub">Écrivez votre premier récit — il rejoindra aussitôt le catalogue.</div>
+        <a href="NouvellePublication.html">Publier une histoire <span>→</span></a>
+      </div>
+    </section>
+
+    <section class="lib-section" id="series">
+      <div class="sec-head"><h2>Mes séries</h2><span class="sec-count" id="series-count"></span></div>
+      <div class="grid" id="series-grid"></div>
+      <div class="empty" id="series-empty" hidden>
+        <div class="e-title">Vous n'avez pas encore créé de série.</div>
+        <div class="e-sub">Réunissez plusieurs de vos histoires sous un même titre.</div>
+        <a href="NouvellePublication.html">Créer une série <span>→</span></a>
+      </div>
+    </section>
+  </div>
+
+  <footer></footer>
+</div>
+
+<div class="modal-overlay" id="confirm-modal" hidden role="dialog" aria-modal="true" aria-labelledby="cm-title">
+  <div class="modal">
+    <div class="m-ic">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+    </div>
+    <h3 id="cm-title">Supprimer cette publication ?</h3>
+    <p id="cm-text"></p>
+    <p class="m-note" id="cm-note"></p>
+    <div class="modal-actions">
+      <button class="btn-cancel" type="button" id="cm-cancel">Annuler</button>
+      <button class="btn-danger" type="button" id="cm-confirm">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<script src="series.js"></script>
+<script src="catalogue-data.js"></script>
+<script src="publications.js"></script>
+<script>
+const BOOK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a2 2 0 0 1 2 2v14"></path><path d="M8 4v16"></path><path d="M20 7v13H6"></path></svg>`;
+const IC_EYE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+const IC_EDIT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>`;
+const IC_TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>`;
+const IC_HEART = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 21l8.8-8.3a5 5 0 0 0 0-7.1z"></path></svg>`;
+const fmtDate = ts => ts ? new Date(ts).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const fmtN = n => n.toLocaleString('fr-FR');
+
+/* ----- Statistiques (données de démonstration, déterministes par publication) ----- */
+function hashStr(s){ let h = 2166136261 >>> 0; s = String(s); for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed){ let x = (seed >>> 0) || 1; x ^= x << 13; x >>>= 0; x ^= x >> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; }
+function ageDays(created){ return Math.max(0, (Date.now() - (created || Date.now())) / 86400000); }
+function storyStats(rec){
+  const h = hashStr('r' + rec.id);
+  const base = 40 + Math.floor(rng(h) * 260);              // socle de lecteurs
+  const daily = 3 + Math.floor(rng(h ^ 0x9e3779b1) * 22);  // lectures / jour
+  const reads = Math.round(base + daily * ageDays(rec.created));
+  const ratio = 0.04 + rng(h ^ 0x85ebca6b) * 0.06;         // 4 % – 10 % de mises en favoris
+  return { reads, favs: Math.round(reads * ratio) };
+}
+let storyStatMap = {};
+function ensureStoryStats(){ storyStatMap = {}; (window.FP ? FP.myStories() : []).forEach(st => { storyStatMap[st.slug] = storyStats(st); }); }
+function seriesStats(ser){
+  if (!ser.count) return { reads: 0, favs: 0 };
+  let reads = 0;
+  ser.stories.forEach(s => { const st = storyStatMap[s.slug]; if (st) reads += st.reads; });
+  const h = hashStr('s' + ser.id);
+  const ratio = 0.05 + rng(h ^ 0x27d4eb2f) * 0.07;        // 5 % – 12 % : la série est suivie en tant que tout
+  return { reads, favs: Math.round(reads * ratio) };
+}
+function statsHtml(s){
+  return `<div class="card-stats">
+      <span class="cstat" title="Nombre de lectures">${IC_EYE}<b>${fmtN(s.reads)}</b>&nbsp;${s.reads > 1 ? 'lectures' : 'lecture'}</span>
+      <span class="cstat" title="Mises en favoris">${IC_HEART}<b>${fmtN(s.favs)}</b>&nbsp;${s.favs > 1 ? 'favoris' : 'favori'}</span>
+    </div>`;
+}
+function renderDash(){
+  ensureStoryStats();
+  const stories = window.FP ? FP.myStories() : [];
+  const series = window.FP ? FP.mySeries() : [];
+  const dash = document.getElementById('dash');
+  if (!stories.length && !series.length){ dash.hidden = true; dash.innerHTML = ''; return; }
+  let reads = 0, favs = 0;
+  stories.forEach(st => { const s = storyStatMap[st.slug]; reads += s.reads; favs += s.favs; });
+  series.forEach(ser => { favs += seriesStats(ser).favs; });
+  dash.hidden = false;
+  dash.innerHTML = [
+    { v: fmtN(stories.length), l: 'Histoires', ic: IC_PEN_SM },
+    { v: fmtN(series.length), l: 'Séries', ic: BOOK_ICON },
+    { v: fmtN(reads), l: 'Lectures', ic: IC_EYE },
+    { v: fmtN(favs), l: 'Favoris', ic: IC_HEART }
+  ].map(d => `<div class="d"><div class="dv">${d.v}</div><div class="dl">${d.ic}${d.l}</div></div>`).join('');
+}
+const IC_PEN_SM = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>`;
+function actionsHtml(kind, id){
+  const eid = encodeURIComponent(id);
+  const view = kind === 'series' ? 'Serie.html?id=' + eid : 'Histoire.html?id=' + eid;
+  return `<div class="card-actions">
+      <a class="act view" href="${view}">${IC_EYE}Voir</a>
+      <a class="act" href="NouvellePublication.html?edit=${kind}&id=${eid}">${IC_EDIT}Modifier</a>
+      <button class="act del" type="button" data-del="${kind}" data-id="${eid}">${IC_TRASH}Supprimer</button>
+    </div>`;
+}
+
+function renderStories() {
+  const grid = document.getElementById('stories-grid');
+  const empty = document.getElementById('stories-empty');
+  const items = (window.FP ? FP.myStories() : []);
+  document.getElementById('stories-count').textContent = items.length ? (items.length + (items.length > 1 ? ' histoires' : ' histoire')) : '';
+  grid.innerHTML = '';
+  if (!items.length) { grid.hidden = true; empty.hidden = false; return; }
+  grid.hidden = false; empty.hidden = true;
+
+  ensureStoryStats();
+  items.forEach(st => {
+    const themesHtml = st.themes.map(t => `<span class="tlabel" style="color:${FC.THEME_COLOR[t] || 'var(--accent)'}">${t}</span>`).join('');
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="pub-status live">En ligne</div>
+      <div class="card-themes">${themesHtml}</div>
+      <h3>${esc(st.title)}</h3>
+      <p class="excerpt">${esc(st.excerpt)}</p>
+      <div class="card-meta"><span>${st.time} min de lecture</span><span class="dot">·</span><span>Publiée le ${fmtDate(st.created)}</span></div>
+      ${statsHtml(storyStatMap[st.slug] || storyStats(st))}
+      ${actionsHtml('story', st.slug)}`;
+    card.querySelector('.del').dataset.title = st.title;
+    grid.appendChild(card);
+  });
+}
+
+function renderSeries() {
+  const grid = document.getElementById('series-grid');
+  const empty = document.getElementById('series-empty');
+  const items = (window.FP ? FP.mySeries() : []);
+  document.getElementById('series-count').textContent = items.length ? (items.length + (items.length > 1 ? ' séries' : ' série')) : '';
+  grid.innerHTML = '';
+  if (!items.length) { grid.hidden = true; empty.hidden = false; return; }
+  grid.hidden = false; empty.hidden = true;
+
+  ensureStoryStats();
+  items.forEach(ser => {
+    const live = ser.count > 0;
+    const themesHtml = ser.themes.map(t => `<span class="tlabel" style="color:${FC.THEME_COLOR[t] || 'var(--accent)'}">${t}</span>`).join('');
+    const tocHtml = live
+      ? ser.stories.map((s, i) => `<li><span class="tn">T${i + 1}</span><span>${esc(s.title)}</span></li>`).join('')
+      : '<li>Aucune histoire pour l\'instant</li>';
+    const card = document.createElement('div');
+    card.className = 'card series-card';
+    card.innerHTML = `
+      <div class="pub-status ${live ? 'live' : 'draft'}">${live ? 'En ligne' : 'Masquée — aucune histoire'}</div>
+      <div class="series-tag">${BOOK_ICON}Série · ${ser.count} histoire${ser.count > 1 ? 's' : ''}</div>
+      ${themesHtml ? `<div class="card-themes">${themesHtml}</div>` : ''}
+      <h3>${esc(ser.title)}</h3>
+      <p class="excerpt">${esc(ser.description)}</p>
+      <ol class="series-toc${live ? '' : ' empty'}">${tocHtml}</ol>
+      <div class="card-meta"><span>${ser.count} histoire${ser.count > 1 ? 's' : ''}</span><span class="dot">·</span><span>Créée le ${fmtDate(ser.created)}</span></div>
+      ${statsHtml(seriesStats(ser))}
+      ${actionsHtml('series', ser.id)}`;
+    card.querySelector('.del').dataset.title = ser.title;
+    grid.appendChild(card);
+  });
+}
+
+/* ----- Suppression avec popin de confirmation ----- */
+let pendingDelete = null;
+const modal = document.getElementById('confirm-modal');
+function openConfirm(kind, id, title) {
+  pendingDelete = { kind, id };
+  document.getElementById('cm-title').textContent = kind === 'series' ? 'Supprimer cette série ?' : 'Supprimer cette histoire ?';
+  document.getElementById('cm-text').innerHTML = `Vous êtes sur le point de supprimer ${kind === 'series' ? 'la série' : "l'histoire"} <b>« ${esc(title)} »</b>.`;
+  document.getElementById('cm-note').textContent = kind === 'series'
+    ? 'Les histoires associées à cette série ne seront pas supprimées.'
+    : 'Cette histoire sera retirée du catalogue. Cette action est irréversible.';
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+  document.getElementById('cm-cancel').focus();
+}
+function closeConfirm() { modal.hidden = true; pendingDelete = null; document.body.style.overflow = ''; }
+document.getElementById('cm-cancel').onclick = closeConfirm;
+modal.addEventListener('click', e => { if (e.target === modal) closeConfirm(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeConfirm(); });
+document.getElementById('cm-confirm').onclick = () => {
+  if (!pendingDelete) return;
+  if (pendingDelete.kind === 'series') FP.deleteSeries(pendingDelete.id);
+  else FP.deleteStory(pendingDelete.id);
+  closeConfirm();
+  renderStories();
+  renderSeries();
+  renderDash();
+};
+function onGridClick(e) {
+  const b = e.target.closest('.del');
+  if (!b) return;
+  e.preventDefault();
+  openConfirm(b.dataset.del, decodeURIComponent(b.dataset.id), b.dataset.title);
+}
+document.getElementById('stories-grid').addEventListener('click', onGridClick);
+document.getElementById('series-grid').addEventListener('click', onGridClick);
+
+if (!FP.curKey()) {
+  document.getElementById('signin').hidden = false;
+} else {
+  document.getElementById('content').hidden = false;
+  renderStories();
+  renderSeries();
+  renderDash();
+  if (location.hash === '#series') {
+    const el = document.getElementById('series');
+    setTimeout(() => window.scrollTo({ top: Math.max(0, el.offsetTop - 16) }), 0);
+  }
+}
+</script>
+<script src="auth.js"></script>
+</body>
+</html>

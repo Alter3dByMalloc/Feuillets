@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feuillets · Nouvelle publication</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1c1a18;
+    --bg-soft:#211f1c;
+    --ink:#f4f0ea;
+    --soft:#c7c0b6;
+    --muted:#8a837a;
+    --faint:#6f685f;
+    --line:#37322d;
+    --line-2:#46403a;
+    --accent:#c4774e;
+    --danger:#c2543f;
+    --serif:"Playfair Display", Georgia, serif;
+    --book:"Lora", Georgia, serif;
+    --sans:"Mulish", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;}
+  a{color:inherit;text-decoration:none;}
+  .page{max-width:1120px;margin:0 auto;}
+
+  /* ---------- Header ---------- */
+  header{display:flex;align-items:center;gap:34px;padding:20px 22px;border-bottom:1px solid var(--line);}
+  .logo{font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.01em;line-height:1;}
+  .logo i{font-style:italic;font-weight:500;color:var(--accent);}
+  nav{display:flex;align-items:center;gap:30px;margin-left:6px;}
+  nav a{font-size:14.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;opacity:.92;transition:opacity .2s,color .2s;}
+  nav a:hover{color:var(--accent);opacity:1;}
+  .actions{margin-left:auto;display:flex;align-items:center;gap:20px;}
+  .btn-line{font-family:var(--sans);border:1px solid var(--line);background:none;color:var(--ink);padding:13px 26px;font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,background .2s;}
+  .btn-line:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+  .btn-publish{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);border:1px solid var(--accent);background:var(--accent);color:#1c1a18;text-decoration:none;padding:13px 22px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s;}
+  .btn-publish:hover{background:#d4865c;border-color:#d4865c;}
+  .btn-publish svg{width:16px;height:16px;}
+  .btn-publish.active{background:rgba(196,119,78,.16);color:#f6ddcd;border-color:var(--accent);}
+
+  /* ---------- Head ---------- */
+  .pub-head{padding:42px 22px 30px;}
+  .kicker{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .kicker svg{width:15px;height:15px;}
+  .pub-head h1{font-family:var(--serif);font-weight:800;font-size:46px;line-height:1.04;letter-spacing:-.01em;color:#fbf8f3;}
+  .pub-head p{font-family:var(--book);font-style:italic;font-size:18px;color:var(--soft);margin-top:14px;max-width:54ch;}
+
+  /* ---------- Composer ---------- */
+  .composer{max-width:840px;margin:0 auto;padding:0 22px 80px;}
+
+  .seg{display:flex;border:1px solid var(--line-2);border-radius:2px;overflow:hidden;margin-bottom:40px;max-width:420px;}
+  .seg button{flex:1;font-family:var(--sans);background:none;border:none;color:var(--muted);
+    padding:14px 10px;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:color .18s,background .18s;}
+  .seg button + button{border-left:1px solid var(--line-2);}
+  .seg button:hover{color:var(--ink);}
+  .seg button.on{background:rgba(196,119,78,.16);color:#f6ddcd;}
+
+  form{display:block;}
+  form[hidden]{display:none;}
+  .field{display:flex;flex-direction:column;gap:9px;margin-bottom:30px;}
+  .field > label{font-size:11.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);}
+  .field .hint{font-size:13.5px;color:var(--faint);font-style:italic;font-family:var(--book);margin-top:-3px;}
+  .in{width:100%;background:none;border:1px solid var(--line-2);border-radius:2px;color:var(--ink);
+    font-family:var(--sans);font-size:15.5px;padding:14px 16px;outline:none;transition:border-color .18s;}
+  .in::placeholder{color:var(--faint);}
+  .in:focus{border-color:var(--accent);}
+  select.in{cursor:pointer;appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238a837a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 15px center;padding-right:42px;}
+  textarea.in{resize:vertical;font-family:var(--book);font-size:17px;line-height:1.65;}
+  textarea.desc{min-height:96px;}
+  textarea.body{min-height:300px;}
+
+  /* Éditeur de texte enrichi */
+  .rte{border:1px solid var(--line-2);border-radius:2px;background:none;transition:border-color .18s;overflow:hidden;}
+  .rte:focus-within{border-color:var(--accent);}
+  .field.err .rte{border-color:var(--danger);}
+  .rte-toolbar{display:flex;align-items:center;gap:3px;flex-wrap:wrap;padding:7px 8px;border-bottom:1px solid var(--line-2);background:rgba(255,255,255,.018);}
+  .rte-btn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:32px;padding:0;border:1px solid transparent;border-radius:2px;
+    background:none;color:var(--soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
+  .rte-btn svg{width:18px;height:18px;}
+  .rte-btn:hover{background:rgba(196,119,78,.1);color:#f6ddcd;}
+  .rte-btn.on{background:rgba(196,119,78,.18);color:#f6ddcd;border-color:color-mix(in srgb,var(--accent) 45%,transparent);}
+  .rte-btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  .rte-sep{width:1px;align-self:stretch;margin:4px 5px;background:var(--line-2);}
+  .rte-area{min-height:300px;max-height:560px;overflow-y:auto;padding:18px 18px 22px;outline:none;
+    font-family:var(--book);font-size:17px;line-height:1.75;color:var(--ink);}
+  .rte-area:empty::before,.rte-area.empty::before{content:attr(data-ph);color:var(--faint);font-style:italic;pointer-events:none;}
+  .rte-area p{margin:0 0 16px;}
+  .rte-area p:last-child{margin-bottom:0;}
+  .rte-area strong,.rte-area b{font-weight:700;color:#fbf8f3;}
+  .rte-area em,.rte-area i{font-style:italic;}
+  .rte-area h3{font-family:var(--serif);font-weight:700;font-size:23px;line-height:1.2;color:#fbf8f3;margin:24px 0 12px;}
+  .rte-area blockquote{font-family:var(--serif);font-style:italic;font-size:20px;line-height:1.45;color:#f3e2d6;
+    border-left:2px solid var(--accent);padding:2px 0 2px 20px;margin:20px 0;}
+  .rte-area ul,.rte-area ol{margin:0 0 16px;padding-left:1.5em;}
+  .rte-area li{margin-bottom:7px;}
+  .rte-area li::marker{color:var(--accent);}
+  .rte-area figure.rte-img{margin:20px 0;}
+  .rte-area figure.rte-img img{display:block;width:100%;max-height:360px;object-fit:cover;border:1px solid var(--line-2);}
+  .rte-area figure.rte-img figcaption{font-family:var(--sans);font-size:13px;font-style:italic;color:var(--muted);text-align:center;padding:9px 4px 0;outline:none;}
+  .rte-area figure.rte-img figcaption:focus{color:var(--soft);}
+
+  /* Bibliothèque de photos */
+  .lib-overlay{position:fixed;inset:0;z-index:140;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(12,11,10,.78);animation:lib-fade .16s ease;}
+  .lib-overlay[hidden]{display:none;}
+  @keyframes lib-fade{from{opacity:0;}to{opacity:1;}}
+  .lib-modal{background:var(--bg-soft);border:1px solid var(--line-2);width:min(880px,100%);max-height:86vh;display:flex;flex-direction:column;
+    box-shadow:0 30px 80px rgba(0,0,0,.55);animation:lib-rise .2s cubic-bezier(.2,.7,.3,1);}
+  @keyframes lib-rise{from{opacity:0;transform:translateY(14px) scale(.985);}to{opacity:1;transform:none;}}
+  .lib-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:24px 26px 18px;border-bottom:1px solid var(--line);}
+  .lib-kick{font-size:11.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+  .lib-head h3{font-family:var(--serif);font-weight:700;font-size:25px;color:#fbf8f3;}
+  .lib-close{background:none;border:1px solid var(--line-2);color:var(--soft);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:14px;flex:none;transition:border-color .18s,color .18s,background .18s;}
+  .lib-close:hover{border-color:var(--accent);color:#f6ddcd;background:rgba(196,119,78,.1);}
+  .lib-filters{display:flex;flex-wrap:wrap;gap:9px;padding:18px 26px;border-bottom:1px solid var(--line);}
+  .lib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:22px 26px;overflow-y:auto;}
+  .lib-tile{position:relative;border:1px solid var(--line-2);background:none;padding:0;cursor:pointer;overflow:hidden;text-align:left;
+    transition:border-color .18s,transform .1s;}
+  .lib-tile:hover{border-color:var(--accent);}
+  .lib-tile:active{transform:scale(.985);}
+  .lib-tile img{display:block;width:100%;height:132px;object-fit:cover;}
+  .lib-cap{padding:9px 12px 11px;font-family:var(--sans);font-size:13px;color:var(--soft);}
+  .lib-cap .c{display:block;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+  .lib-tile:hover .lib-cap{color:#f6ddcd;}
+  @media (max-width:620px){ .lib-grid{grid-template-columns:repeat(2,1fr);} }
+
+  .field.err .in{border-color:var(--danger);}
+  .err-msg{display:none;font-size:13px;color:#e08068;letter-spacing:.01em;}
+  .field.err .err-msg{display:block;}
+
+  /* selection chips */
+  .sel-chips{display:flex;flex-wrap:wrap;gap:9px;}
+  .tsel{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);font-size:14px;font-weight:500;color:var(--soft);
+    background:none;border:1px solid var(--line-2);border-radius:999px;padding:9px 15px;cursor:pointer;transition:border-color .18s,color .18s,background .18s;}
+  .tsel .dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--c);background:transparent;flex:none;transition:background .18s,box-shadow .18s;}
+  .tsel:hover{color:var(--ink);border-color:var(--c);}
+  .tsel.on{color:#fbf8f3;border-color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);}
+  .tsel.on .dot{background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent);}
+  .chip-sel{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--soft);background:none;border:1px solid var(--line-2);
+    border-radius:999px;padding:8px 14px;cursor:pointer;transition:border-color .18s,color .18s,background .18s;}
+  .chip-sel:hover{border-color:var(--accent);color:var(--ink);}
+  .chip-sel.on{background:rgba(196,119,78,.16);border-color:var(--accent);color:#f6ddcd;}
+
+  /* import Word */
+  .import-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:2px;}
+  .import-btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--soft);background:none;border:1px solid var(--line-2);border-radius:2px;padding:9px 15px;cursor:pointer;transition:border-color .18s,color .18s,background .18s;}
+  .import-btn:hover{border-color:var(--accent);color:#f6ddcd;background:rgba(196,119,78,.08);}
+  .import-btn svg{width:15px;height:15px;color:var(--accent);}
+  .import-status{font-size:13.5px;font-family:var(--book);font-style:italic;color:var(--muted);}
+  .import-status.ok{color:#7fae8f;font-style:normal;}
+  .import-status.bad{color:#e08068;font-style:normal;}
+
+  /* picker — état vide */
+  .pick-empty{padding:34px 24px;text-align:center;}
+  .pick-empty .pe-t{font-family:var(--book);font-style:italic;font-size:16px;color:var(--soft);margin-bottom:9px;}
+  .pick-empty .pe-s{font-size:13.5px;color:var(--faint);line-height:1.55;max-width:46ch;margin:0 auto 18px;}
+  .pick-empty button{font-family:var(--sans);background:none;border:1px solid var(--line-2);color:var(--ink);padding:10px 18px;font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:border-color .18s,background .18s;}
+  .pick-empty button:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+
+  /* story picker (séries) */
+  .picker{border:1px solid var(--line-2);border-radius:2px;max-height:360px;overflow:auto;}
+  .pick-search{display:flex;align-items:center;gap:9px;padding:11px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg-soft);}
+  .pick-search svg{width:16px;height:16px;color:var(--muted);flex:none;}
+  .pick-search input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--ink);font-family:var(--sans);font-size:14px;}
+  .pick-search input::placeholder{color:var(--faint);}
+  .pick-row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:none;border:none;
+    border-bottom:1px solid var(--line);cursor:pointer;padding:13px 16px;color:var(--soft);transition:background .15s;}
+  .pick-row:last-child{border-bottom:none;}
+  .pick-row:hover{background:rgba(255,255,255,.03);}
+  .pick-row[hidden]{display:none;}
+  .pick-box{width:20px;height:20px;border:1px solid var(--line-2);border-radius:4px;flex:none;display:flex;align-items:center;justify-content:center;
+    color:transparent;transition:background .15s,border-color .15s,color .15s;}
+  .pick-box svg{width:13px;height:13px;}
+  .pick-row.on .pick-box{background:var(--accent);border-color:var(--accent);color:#1c1a18;}
+  .pick-main{flex:1;min-width:0;}
+  .pick-title{font-family:var(--serif);font-weight:700;font-size:16.5px;color:#fbf8f3;line-height:1.2;}
+  .pick-meta{font-size:12.5px;color:var(--muted);margin-top:3px;}
+  .pick-row.on .pick-title{color:#fbf8f3;}
+  .pick-order{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--accent);flex:none;
+    border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);border-radius:3px;padding:2px 8px;}
+  .pick-count{font-size:13px;color:var(--muted);margin-top:11px;}
+  .pick-count b{color:var(--soft);font-weight:600;}
+
+  /* actions */
+  .pub-actions{display:flex;align-items:center;gap:20px;margin-top:18px;padding-top:28px;border-top:1px solid var(--line);}
+  .submit{font-family:var(--sans);background:var(--accent);border:1px solid var(--accent);color:#1c1a18;
+    padding:15px 30px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .18s,border-color .18s;}
+  .submit:hover{background:#d4865c;border-color:#d4865c;}
+  .ghost{font-family:var(--sans);background:none;border:none;color:var(--muted);font-size:13.5px;letter-spacing:.04em;cursor:pointer;transition:color .18s;}
+  .ghost:hover{color:var(--accent);text-decoration:underline;}
+
+  .note{margin-bottom:34px;padding:16px 20px;border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);background:rgba(196,119,78,.1);
+    font-size:14.5px;color:#f1d9c9;display:none;align-items:center;gap:12px;}
+  .note.show{display:flex;}
+  .note svg{width:19px;height:19px;color:var(--accent);flex:none;}
+  .note b{color:#fbf8f3;font-weight:700;}
+
+  /* signed-out */
+  .signin{margin:30px 22px 0;border:1px solid var(--line);padding:70px 30px;text-align:center;
+    background:radial-gradient(120% 130% at 50% 0%, rgba(196,119,78,.06), transparent 62%);}
+  .signin .s-ic{width:54px;height:54px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:22px;
+    color:var(--accent);background:rgba(196,119,78,.13);border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);}
+  .signin .s-ic svg{width:26px;height:26px;}
+  .signin h2{font-family:var(--serif);font-weight:700;font-size:30px;color:#fbf8f3;margin-bottom:12px;}
+  .signin p{font-family:var(--book);font-style:italic;font-size:17px;color:var(--soft);max-width:46ch;margin:0 auto 28px;}
+  .signin a{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);background:var(--accent);border:1px solid var(--accent);color:#1c1a18;
+    padding:14px 26px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:background .18s,border-color .18s;}
+  .signin a:hover{background:#d4865c;border-color:#d4865c;}
+
+  footer{height:60px;}
+
+  @media (max-width:620px){
+    nav{display:none;}
+    .pub-head h1{font-size:36px;}
+    .btn-publish span.lbl{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <a class="logo" href="Feuillets.html">Feui<i>llets</i></a>
+    <nav>
+      <a href="Catalogue.html">Le catalogue</a>
+      <a href="Auteurs.html">Auteurs</a>
+    </nav>
+    <div class="actions">
+      <a class="btn-publish active" href="NouvellePublication.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        <span class="lbl">Publier</span>
+      </a>
+      <a class="btn-line" href="Connexion.html">Connexion</a>
+    </div>
+  </header>
+
+  <div class="pub-head">
+    <div class="kicker">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+      Espace auteur
+    </div>
+    <h1>Nouvelle publication</h1>
+    <p id="head-sub">Donnez vie à un nouveau récit, ou réunissez vos histoires en une série.</p>
+  </div>
+
+  <!-- État déconnecté -->
+  <div class="signin" id="signin" hidden>
+    <div class="s-ic">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+    </div>
+    <h2>Connectez-vous pour publier</h2>
+    <p>La publication d'histoires et de séries est réservée aux auteurs connectés.</p>
+    <a href="Connexion.html">Se connecter <span>→</span></a>
+  </div>
+
+  <!-- Composer -->
+  <div class="composer" id="composer" hidden>
+
+    <div class="seg" role="tablist">
+      <button id="tab-story" class="on" type="button">Une histoire</button>
+      <button id="tab-series" type="button">Une série</button>
+    </div>
+
+    <div class="note" id="note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9 12l2 2 4-4"></path></svg>
+      <span id="note-text"></span>
+    </div>
+
+    <!-- Formulaire HISTOIRE -->
+    <form id="story-form" novalidate>
+      <div class="field" id="sf-title-wrap">
+        <label for="sf-title">Titre de l'histoire</label>
+        <input class="in" id="sf-title" type="text" placeholder="Ex. : Le Dernier Train pour Minuit" autocomplete="off">
+        <span class="err-msg">Donnez un titre à votre histoire.</span>
+      </div>
+
+      <div class="field">
+        <label for="sf-desc">Description</label>
+        <span class="hint">Quelques lignes pour donner envie — l'accroche qui apparaîtra dans le catalogue.</span>
+        <textarea class="in desc" id="sf-desc" placeholder="De quoi parle votre histoire ?"></textarea>
+      </div>
+
+      <div class="field" id="sf-body-wrap">
+        <label>Texte de l'histoire</label>
+        <div class="import-row">
+          <button class="import-btn" type="button" id="sf-import">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 11v6"></path><polyline points="9 14 12 17 15 14"></polyline></svg>
+            Importer depuis un document Word
+          </button>
+          <span class="import-status" id="sf-import-status"></span>
+        </div>
+        <div class="rte" id="sf-rte">
+          <div class="rte-toolbar" role="toolbar" aria-label="Mise en forme du texte">
+            <button type="button" class="rte-btn" data-cmd="bold" title="Gras" aria-label="Gras">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7z"></path><path d="M7 12h7a3.5 3.5 0 0 1 0 7H7z"></path></svg>
+            </button>
+            <button type="button" class="rte-btn" data-cmd="italic" title="Italique" aria-label="Italique">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="11" y2="5"></line><line x1="13" y1="19" x2="5" y2="19"></line><line x1="15" y1="5" x2="9" y2="19"></line></svg>
+            </button>
+            <span class="rte-sep"></span>
+            <button type="button" class="rte-btn" data-block="h3" title="Titre de section" aria-label="Titre de section">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5v14"></path><path d="M18 5v14"></path><path d="M6 12h12"></path></svg>
+            </button>
+            <button type="button" class="rte-btn" data-block="blockquote" title="Citation" aria-label="Citation">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M9.5 6C7 6.8 5.3 9 5.3 11.7V18h6v-6.3H8.1c0-1.7 .9-3 2.4-3.5zm9 0c-2.5 .8-4.2 3-4.2 5.7V18h6v-6.3h-3.2c0-1.7 .9-3 2.4-3.5z"></path></svg>
+            </button>
+            <span class="rte-sep"></span>
+            <button type="button" class="rte-btn" data-cmd="insertUnorderedList" title="Liste à puces" aria-label="Liste à puces">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"></line><line x1="9" y1="12" x2="20" y2="12"></line><line x1="9" y1="18" x2="20" y2="18"></line><circle cx="4.5" cy="6" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="4.5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="4.5" cy="18" r="1.4" fill="currentColor" stroke="none"></circle></svg>
+            </button>
+            <button type="button" class="rte-btn" data-cmd="insertOrderedList" title="Liste numérotée" aria-label="Liste numérotée">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="20" y2="6"></line><line x1="10" y1="12" x2="20" y2="12"></line><line x1="10" y1="18" x2="20" y2="18"></line><text x="2" y="8.5" font-size="7.5" font-family="sans-serif" fill="currentColor" stroke="none">1</text><text x="2" y="20" font-size="7.5" font-family="sans-serif" fill="currentColor" stroke="none">2</text></svg>
+            </button>
+            <span class="rte-sep"></span>
+            <button type="button" class="rte-btn" data-action="image" title="Insérer une image" aria-label="Insérer une image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9.5" r="1.8"></circle><path d="M21 16l-5-5L5 20"></path></svg>
+            </button>
+          </div>
+          <div class="rte-area" id="sf-body" contenteditable="true" data-ph="Il était une fois… — écrivez ici, ou importez votre manuscrit Word ci-dessus." aria-label="Texte de l'histoire"></div>
+        </div>
+        <span class="err-msg">Le texte de votre histoire est vide.</span>
+        <input type="file" id="sf-file" accept=".docx,.odt,.txt,.text,.md,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,text/plain" hidden>
+      </div>
+
+      <div class="field">
+        <label>Thèmes</label>
+        <span class="hint">Sélectionnez un ou plusieurs genres.</span>
+        <div class="sel-chips" id="sf-themes"></div>
+      </div>
+
+      <div class="field">
+        <label>Caractéristiques</label>
+        <span class="hint">Ce qui définit l'atmosphère et le ton du récit.</span>
+        <div class="sel-chips" id="sf-chars"></div>
+      </div>
+
+      <div class="field">
+        <label for="sf-series">Rattacher à une série <span style="color:var(--faint);text-transform:none;letter-spacing:0;font-weight:500;">— facultatif</span></label>
+        <select class="in" id="sf-series"></select>
+      </div>
+
+      <div class="pub-actions">
+        <button class="submit" type="submit">Publier l'histoire</button>
+        <button class="ghost" type="button" id="sf-reset">Réinitialiser</button>
+      </div>
+    </form>
+
+    <!-- Formulaire SÉRIE -->
+    <form id="series-form" novalidate hidden>
+      <div class="field" id="rf-title-wrap">
+        <label for="rf-title">Titre de la série</label>
+        <input class="in" id="rf-title" type="text" placeholder="Ex. : Les Seuils de Minuit" autocomplete="off">
+        <span class="err-msg">Donnez un titre à votre série.</span>
+      </div>
+
+      <div class="field">
+        <label for="rf-desc">Description</label>
+        <span class="hint">Le fil rouge qui relie les histoires de la série.</span>
+        <textarea class="in desc" id="rf-desc" placeholder="Qu'est-ce qui réunit ces histoires ?"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Histoires de la série <span style="color:var(--faint);text-transform:none;letter-spacing:0;font-weight:500;">— facultatif</span></label>
+        <span class="hint">Choisissez parmi vos histoires publiées, dans l'ordre de lecture. Une série peut être créée sans aucune histoire.</span>
+        <div class="picker" id="rf-stories"></div>
+        <div class="pick-count" id="rf-count"><b>0</b> histoire sélectionnée</div>
+      </div>
+
+      <div class="pub-actions">
+        <button class="submit" type="submit">Publier la série</button>
+        <button class="ghost" type="button" id="rf-reset">Réinitialiser</button>
+      </div>
+    </form>
+
+  </div>
+
+  <footer></footer>
+</div>
+
+<!-- Bibliothèque de photos -->
+<div class="lib-overlay" id="photo-modal" hidden role="dialog" aria-modal="true" aria-label="Bibliothèque de photos">
+  <div class="lib-modal">
+    <div class="lib-head">
+      <div>
+        <div class="lib-kick">Bibliothèque de démonstration</div>
+        <h3>Insérer une image</h3>
+      </div>
+      <button class="lib-close" id="photo-close" type="button" aria-label="Fermer">✕</button>
+    </div>
+    <div class="lib-filters" id="photo-filters"></div>
+    <div class="lib-grid" id="photo-grid"></div>
+  </div>
+</div>
+
+<script src="series.js"></script>
+<script src="catalogue-data.js"></script>
+<script src="publications.js"></script>
+<script src="phototheque.js"></script>
+<script>
+const session = (() => { try { return JSON.parse(localStorage.getItem('feuillets_session')); } catch (e) { return null; } })();
+
+if (!session) {
+  document.getElementById('signin').hidden = false;
+} else {
+  document.getElementById('composer').hidden = false;
+  initComposer();
+}
+
+function initComposer() {
+  const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  const sel = { themes: new Set(), chars: new Set(), stories: [] };
+  let editCtx = null;   // { type:'story'|'series', id } en mode édition
+
+  /* ----- onglets ----- */
+  const storyForm = document.getElementById('story-form');
+  const seriesForm = document.getElementById('series-form');
+  const tabStory = document.getElementById('tab-story');
+  const tabSeries = document.getElementById('tab-series');
+  const headSub = document.getElementById('head-sub');
+  function setMode(mode) {
+    const isStory = mode === 'story';
+    tabStory.classList.toggle('on', isStory);
+    tabSeries.classList.toggle('on', !isStory);
+    storyForm.hidden = !isStory;
+    seriesForm.hidden = isStory;
+    headSub.textContent = isStory
+      ? "Donnez vie à un nouveau récit — son texte, ses thèmes et son atmosphère."
+      : "Réunissez plusieurs histoires sous un même titre, dans l'ordre de lecture.";
+    if (!isStory) buildPicker();
+    if (isStory) buildSeriesSelect();
+    hideNote();
+  }
+  tabStory.onclick = () => setMode('story');
+  tabSeries.onclick = () => setMode('series');
+
+  /* ----- chips thèmes ----- */
+  const themesBox = document.getElementById('sf-themes');
+  FC.THEMES.forEach(t => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tsel';
+    b.dataset.val = t.id;
+    b.style.setProperty('--c', t.color);
+    b.innerHTML = `<span class="dot"></span><span>${t.id}</span>`;
+    b.onclick = () => {
+      if (sel.themes.has(t.id)) sel.themes.delete(t.id); else sel.themes.add(t.id);
+      b.classList.toggle('on', sel.themes.has(t.id));
+    };
+    themesBox.appendChild(b);
+  });
+
+  /* ----- chips caractéristiques ----- */
+  const charsBox = document.getElementById('sf-chars');
+  FC.CHARS.forEach(c => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip-sel';
+    b.dataset.val = c;
+    b.textContent = c;
+    b.onclick = () => {
+      if (sel.chars.has(c)) sel.chars.delete(c); else sel.chars.add(c);
+      b.classList.toggle('on', sel.chars.has(c));
+    };
+    charsBox.appendChild(b);
+  });
+
+  /* ----- éditeur de texte enrichi (corps de l'histoire) ----- */
+  const bodyRTE = (function () {
+    const area = document.getElementById('sf-body');
+    const toolbar = document.querySelector('#sf-rte .rte-toolbar');
+    function isEmpty() {
+      if (area.textContent.trim() !== '') return false;
+      if (area.querySelector('img,hr,li,blockquote,h1,h2,h3,h4')) return false;
+      return true;
+    }
+    function refresh() { area.classList.toggle('empty', isEmpty()); }
+    let savedRange = null;
+    function saveSel() { const s = window.getSelection(); if (s && s.rangeCount) { const r = s.getRangeAt(0); if (area.contains(r.commonAncestorContainer)) savedRange = r.cloneRange(); } }
+    function getHTML() {
+      if (isEmpty()) return '';
+      const src = area.cloneNode(true);
+      // retire les <span style> parasites laissés par execCommand
+      src.querySelectorAll('span[style]').forEach(s => { const p = s.parentNode; while (s.firstChild) p.insertBefore(s.firstChild, s); p.removeChild(s); });
+      src.querySelectorAll('[contenteditable]').forEach(n => n.removeAttribute('contenteditable'));
+      const BLOCK = { P:1, H1:1, H2:1, H3:1, H4:1, BLOCKQUOTE:1, UL:1, OL:1, FIGURE:1 };
+      const frag = document.createDocumentFragment();
+      function walk(nodes, out) {
+        let buf = [];
+        const flush = () => {
+          if (buf.some(n => (n.textContent || '').trim() !== '' || n.nodeName === 'BR' || n.nodeName === 'IMG')) {
+            const p = document.createElement('p'); buf.forEach(n => p.appendChild(n)); out.appendChild(p);
+          }
+          buf = [];
+        };
+        Array.from(nodes).forEach(node => {
+          if (node.nodeType === 1 && BLOCK[node.nodeName]) { flush(); out.appendChild(node); }
+          else if (node.nodeType === 1 && node.nodeName === 'DIV') { flush(); walk(Array.from(node.childNodes), out); }
+          else { buf.push(node); }
+        });
+        flush();
+      }
+      walk(Array.from(src.childNodes), frag);
+      const wrap = document.createElement('div'); wrap.appendChild(frag);
+      return wrap.innerHTML.trim();
+    }
+    function getText() { return (area.innerText || '').replace(/\u00a0/g, ' ').replace(/\n{3,}/g, '\n\n').trim(); }
+    function setHTML(html) {
+      area.innerHTML = html || '';
+      // restaure l'édition des figures images (protégées + légende modifiable)
+      area.querySelectorAll('figure.rte-img').forEach(f => {
+        f.setAttribute('contenteditable', 'false');
+        const c = f.querySelector('figcaption');
+        if (c) c.setAttribute('contenteditable', 'true');
+      });
+      refresh();
+    }
+    function setText(text) {
+      const paras = String(text || '').split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
+      area.innerHTML = paras.length ? paras.map(p => '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>').join('') : '';
+      refresh();
+    }
+    function clear() { area.innerHTML = ''; savedRange = null; refresh(); }
+    function insertImage(photo) {
+      const fig = '<figure class="rte-img" contenteditable="false"><img src="' + photo.src + '" alt="' + esc(photo.title) + '"><figcaption contenteditable="true">' + esc(photo.title) + '</figcaption></figure><p><br></p>';
+      area.focus();
+      const s = window.getSelection();
+      if (savedRange) { s.removeAllRanges(); s.addRange(savedRange); }
+      document.execCommand('insertHTML', false, fig);
+      saveSel(); refresh();
+      if (!isEmpty()) setErr('sf-body-wrap', false);
+    }
+    function syncToolbar() {
+      toolbar.querySelectorAll('[data-cmd]').forEach(b => { try { b.classList.toggle('on', document.queryCommandState(b.dataset.cmd)); } catch (e) {} });
+      let block = ''; try { block = (document.queryCommandValue('formatBlock') || '').toLowerCase(); } catch (e) {}
+      toolbar.querySelectorAll('[data-block]').forEach(b => b.classList.toggle('on', block === b.dataset.block));
+    }
+    toolbar.addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); });
+    toolbar.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.action === 'image') { saveSel(); openPhotoModal(); return; }
+      area.focus();
+      if (b.dataset.cmd) {
+        document.execCommand(b.dataset.cmd, false, null);
+      } else if (b.dataset.block) {
+        const tag = b.dataset.block;
+        let cur = ''; try { cur = (document.queryCommandValue('formatBlock') || '').toLowerCase(); } catch (e) {}
+        document.execCommand('formatBlock', false, '<' + (cur === tag ? 'p' : tag) + '>');
+      }
+      syncToolbar(); refresh();
+      if (!isEmpty()) setErr('sf-body-wrap', false);
+    });
+    area.addEventListener('input', () => { refresh(); if (!isEmpty()) setErr('sf-body-wrap', false); });
+    area.addEventListener('keyup', () => { syncToolbar(); saveSel(); });
+    area.addEventListener('mouseup', () => { syncToolbar(); saveSel(); });
+    area.addEventListener('paste', e => {
+      e.preventDefault();
+      const t = ((e.clipboardData || window.clipboardData).getData('text/plain') || '');
+      document.execCommand('insertText', false, t);
+    });
+    refresh();
+    try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch (e) {}
+    return { getHTML, getText, setHTML, setText, clear, isEmpty, insertImage };
+  })();
+
+  /* ----- select série : MES séries ----- */
+  const seriesSelect = document.getElementById('sf-series');
+  function buildSeriesSelect(){
+    const mine = window.FP ? FP.mySeries() : [];
+    const cur = seriesSelect.value;
+    seriesSelect.innerHTML = '<option value="">Aucune — histoire indépendante</option>' +
+      mine.map(s => `<option value="${s.id}">${esc(s.title)}</option>`).join('');
+    if (cur) seriesSelect.value = cur;
+  }
+  buildSeriesSelect();
+
+  /* ----- picker d'histoires : uniquement MES histoires ----- */
+  const picker = document.getElementById('rf-stories');
+  const countLabel = document.getElementById('rf-count');
+  const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  let rows = [];
+
+  function myStories() {
+    const key = session.identifier || session.name || 'lecteur';
+    let all = {};
+    try { all = JSON.parse(localStorage.getItem('feuillets_publications')) || {}; } catch (e) {}
+    return (all[key] || []).filter(p => p.type === 'story' && p.id);
+  }
+
+  function buildPicker() {
+    rows = [];
+    picker.innerHTML = '';
+    const mine = myStories();
+    sel.stories = sel.stories.filter(id => mine.some(s => s.id === id));
+
+    if (!mine.length) {
+      const empty = document.createElement('div');
+      empty.className = 'pick-empty';
+      empty.innerHTML = `<div class="pe-t">Vous n'avez pas encore publié d'histoire.</div>
+        <div class="pe-s">Publiez d'abord une histoire pour pouvoir l'ajouter ici. Une série peut aussi être créée maintenant, puis enrichie plus tard.</div>
+        <button type="button" id="goto-story">Créer une histoire</button>`;
+      picker.appendChild(empty);
+      const g = document.getElementById('goto-story');
+      if (g) g.onclick = () => setMode('story');
+      paintPicker();
+      return;
+    }
+
+    const searchWrap = document.createElement('div');
+    searchWrap.className = 'pick-search';
+    searchWrap.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+      <input type="text" id="rf-search" placeholder="Filtrer vos histoires…" autocomplete="off">`;
+    picker.appendChild(searchWrap);
+
+    mine.forEach(st => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'pick-row';
+      row.dataset.id = st.id;
+      row.dataset.q = norm(st.title + ' ' + (st.themes || []).join(' '));
+      const meta = (st.themes && st.themes.length) ? st.themes.join(' · ') : 'Histoire';
+      row.innerHTML = `
+        <span class="pick-box">${CHECK}</span>
+        <span class="pick-main"><span class="pick-title">${esc(st.title)}</span><span class="pick-meta">${esc(meta)}</span></span>
+        <span class="pick-order" hidden></span>`;
+      row.onclick = () => {
+        const i = sel.stories.indexOf(st.id);
+        if (i >= 0) sel.stories.splice(i, 1); else sel.stories.push(st.id);
+        paintPicker();
+      };
+      picker.appendChild(row);
+      rows.push(row);
+    });
+
+    document.getElementById('rf-search').addEventListener('input', e => {
+      const q = norm(e.target.value.trim());
+      rows.forEach(row => { row.hidden = q !== '' && !row.dataset.q.includes(q); });
+    });
+
+    paintPicker();
+  }
+
+  function paintPicker() {
+    rows.forEach(row => {
+      const pos = sel.stories.indexOf(row.dataset.id);
+      const on = pos >= 0;
+      row.classList.toggle('on', on);
+      const order = row.querySelector('.pick-order');
+      order.hidden = !on;
+      if (on) order.textContent = 'Tome ' + (pos + 1);
+    });
+    const n = sel.stories.length;
+    countLabel.innerHTML = `<b>${n}</b> histoire${n > 1 ? 's' : ''} sélectionnée${n > 1 ? 's' : ''}`;
+  }
+
+  /* ----- notes / erreurs ----- */
+  const note = document.getElementById('note');
+  const noteText = document.getElementById('note-text');
+  function showNote(html) { noteText.innerHTML = html; note.classList.add('show'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  function hideNote() { note.classList.remove('show'); }
+  function setErr(wrapId, on) { document.getElementById(wrapId).classList.toggle('err', on); }
+
+  /* ----- persistance (démonstration) ----- */
+  function persist(rec) {
+    const key = session.identifier || session.name || 'lecteur';
+    let all = {};
+    try { all = JSON.parse(localStorage.getItem('feuillets_publications')) || {}; } catch (e) {}
+    if (!Array.isArray(all[key])) all[key] = [];
+    rec.created = Date.now();
+    rec.author = session.name || 'Auteur';
+    all[key].unshift(rec);
+    localStorage.setItem('feuillets_publications', JSON.stringify(all));
+  }
+
+  /* ----- soumission HISTOIRE ----- */
+  storyForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const title = document.getElementById('sf-title').value.trim();
+    const bodyHtml = bodyRTE.getHTML();
+    const bodyEmpty = bodyRTE.isEmpty();
+    setErr('sf-title-wrap', !title);
+    setErr('sf-body-wrap', bodyEmpty);
+    if (!title || bodyEmpty) { hideNote(); return; }
+    if (editCtx && editCtx.type === 'story') {
+      FP.updateStory(editCtx.id, {
+        title, body: bodyHtml,
+        description: document.getElementById('sf-desc').value.trim(),
+        themes: [...sel.themes], chars: [...sel.chars],
+        series: seriesSelect.value || null
+      });
+      showEditDone(title);
+      return;
+    }
+    const storyId = makeId(title);
+    persist({
+      type: 'story', id: storyId, title, body: bodyHtml,
+      description: document.getElementById('sf-desc').value.trim(),
+      themes: [...sel.themes], chars: [...sel.chars],
+      series: seriesSelect.value || null
+    });
+    let serName = '';
+    if (seriesSelect.value && window.FP) {
+      FP.attachStoryToSeries(seriesSelect.value, storyId);
+      const opt = seriesSelect.options[seriesSelect.selectedIndex];
+      serName = opt ? opt.textContent : '';
+    }
+    showNote(`<b>« ${esc(title)} »</b> a été publiée${serName ? ' et ajoutée à la série « ' + esc(serName) + ' »' : ''} — elle apparaît dès maintenant dans le catalogue. <span style="color:var(--soft)">(démonstration)</span>`);
+    resetStory();
+  });
+  function resetStory() {
+    storyForm.reset();
+    bodyRTE.clear();
+    sel.themes.clear(); sel.chars.clear();
+    themesBox.querySelectorAll('.tsel.on').forEach(b => b.classList.remove('on'));
+    charsBox.querySelectorAll('.chip-sel.on').forEach(b => b.classList.remove('on'));
+    setErr('sf-title-wrap', false); setErr('sf-body-wrap', false);
+  }
+  document.getElementById('sf-reset').onclick = () => { resetStory(); hideNote(); };
+
+  /* ----- soumission SÉRIE ----- */
+  seriesForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const title = document.getElementById('rf-title').value.trim();
+    setErr('rf-title-wrap', !title);
+    if (!title) { hideNote(); return; }
+    if (editCtx && editCtx.type === 'series') {
+      FP.updateSeries(editCtx.id, {
+        title,
+        description: document.getElementById('rf-desc').value.trim(),
+        stories: sel.stories.slice()
+      });
+      showEditDone(title);
+      return;
+    }
+    persist({
+      type: 'series', id: makeId(title), title,
+      description: document.getElementById('rf-desc').value.trim(),
+      stories: sel.stories.slice()
+    });
+    const n = sel.stories.length;
+    const vis = n > 0 ? ' Elle apparaît dès maintenant dans le catalogue.' : ' Ajoutez-y une histoire pour la rendre visible dans le catalogue.';
+    showNote(`<b>« ${esc(title)} »</b> a été créée avec ${n} histoire${n > 1 ? 's' : ''}.${vis} <span style="color:var(--soft)">(démonstration)</span>`);
+    resetSeries();
+  });
+  function resetSeries() {
+    seriesForm.reset();
+    sel.stories = [];
+    setErr('rf-title-wrap', false);
+    buildPicker();
+  }
+  document.getElementById('rf-reset').onclick = () => { resetSeries(); hideNote(); };
+
+  /* ----- import depuis un document Word (ou équivalent) ----- */
+  const fileInput = document.getElementById('sf-file');
+  const importBtn = document.getElementById('sf-import');
+  const importStatus = document.getElementById('sf-import-status');
+  importBtn.onclick = () => fileInput.click();
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    importStatus.className = 'import-status';
+    importStatus.textContent = 'Lecture de « ' + file.name + ' »…';
+    try {
+      const text = await readImportedFile(file);
+      if (!text.trim()) throw new Error('Aucun texte n\u2019a été trouvé dans ce document.');
+      bodyRTE.setText(text);
+      setErr('sf-body-wrap', false);
+      const words = text.trim().split(/\s+/).length;
+      importStatus.className = 'import-status ok';
+      importStatus.textContent = '\u2713 Texte importé depuis « ' + file.name + ' » — ' + words.toLocaleString('fr-FR') + ' mots.';
+    } catch (err) {
+      importStatus.className = 'import-status bad';
+      importStatus.textContent = (err && err.message) ? err.message : 'Impossible de lire ce fichier.';
+    } finally {
+      fileInput.value = '';
+    }
+  });
+
+  /* ----- mode \u00c9DITION ----- */
+  function paintChips() {
+    themesBox.querySelectorAll('.tsel').forEach(b => b.classList.toggle('on', sel.themes.has(b.dataset.val)));
+    charsBox.querySelectorAll('.chip-sel').forEach(b => b.classList.toggle('on', sel.chars.has(b.dataset.val)));
+  }
+  function enterEditChrome(kind) {
+    document.querySelector('.seg').style.display = 'none';
+    const h1 = document.querySelector('.pub-head h1');
+    const kicker = document.querySelector('.pub-head .kicker');
+    if (kicker) kicker.lastChild.textContent = ' Modifier';
+    if (h1) h1.textContent = kind === 'series' ? 'Modifier la s\u00e9rie' : "Modifier l'histoire";
+    headSub.textContent = kind === 'series'
+      ? "Ajustez le titre, la description et les histoires de votre s\u00e9rie."
+      : "Ajustez le texte, les th\u00e8mes et les informations de votre histoire.";
+    const form = kind === 'series' ? seriesForm : storyForm;
+    form.querySelector('.submit').textContent = 'Enregistrer les modifications';
+    const ghost = form.querySelector('.ghost');
+    ghost.textContent = 'Annuler';
+    ghost.onclick = () => { location.href = 'MesPublications.html'; };
+  }
+  function showEditDone(title) {
+    showNote(`<b>\u00ab ${esc(title)} \u00bb</b> a \u00e9t\u00e9 mise \u00e0 jour. <a href=\"MesPublications.html\" style=\"color:var(--accent);text-decoration:underline;font-weight:600;\">Retour \u00e0 mes publications</a>`);
+  }
+  function applyEditMode() {
+    const params = new URLSearchParams(location.search);
+    const type = params.get('edit');
+    const id = params.get('id');
+    if (!id || !window.FP) return;
+    if (type === 'story') {
+      const rec = FP.rawStory(id);
+      if (!rec) return;
+      editCtx = { type: 'story', id };
+      document.getElementById('sf-title').value = rec.title || '';
+      document.getElementById('sf-desc').value = rec.description || '';
+      if (/<[a-z][\s\S]*>/i.test(rec.body || '')) bodyRTE.setHTML(rec.body); else bodyRTE.setText(rec.body);
+      sel.themes = new Set(rec.themes || []);
+      sel.chars = new Set(rec.chars || []);
+      setMode('story');
+      paintChips();
+      seriesSelect.value = rec.series || '';
+      enterEditChrome('story');
+    } else if (type === 'series') {
+      const rec = FP.rawSeries(id);
+      if (!rec) return;
+      editCtx = { type: 'series', id };
+      document.getElementById('rf-title').value = rec.title || '';
+      document.getElementById('rf-desc').value = rec.description || '';
+      sel.stories = (rec.stories || []).slice();
+      setMode('series');
+      enterEditChrome('series');
+    }
+  }
+
+  buildPicker();
+  applyEditMode();
+
+  /* ----- Photothèque (bibliothèque de démonstration) ----- */
+  const photoModal = document.getElementById('photo-modal');
+  const photoGrid = document.getElementById('photo-grid');
+  const photoFilters = document.getElementById('photo-filters');
+  let photoCat = 'Toutes';
+  function paintPhotoGrid() {
+    const lib = (window.FPhoto ? FPhoto.LIBRARY : []);
+    const items = photoCat === 'Toutes' ? lib : lib.filter(p => p.category === photoCat);
+    photoGrid.innerHTML = items.map(p =>
+      `<button type="button" class="lib-tile" data-id="${p.id}">
+        <img src="${p.src}" alt="${esc(p.title)}" loading="lazy">
+        <span class="lib-cap">${esc(p.title)}<span class="c">${esc(p.category)}</span></span>
+      </button>`).join('');
+  }
+  function buildPhotoFilters() {
+    const lib = (window.FPhoto ? FPhoto.LIBRARY : []);
+    const cats = ['Toutes'].concat([...new Set(lib.map(p => p.category))]);
+    photoFilters.innerHTML = cats.map(c => `<button type="button" class="chip-sel${c === photoCat ? ' on' : ''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+  }
+  photoFilters.addEventListener('click', e => {
+    const b = e.target.closest('[data-cat]'); if (!b) return;
+    photoCat = b.dataset.cat;
+    photoFilters.querySelectorAll('.chip-sel').forEach(x => x.classList.toggle('on', x === b));
+    paintPhotoGrid();
+  });
+  photoGrid.addEventListener('click', e => {
+    const t = e.target.closest('.lib-tile'); if (!t) return;
+    const photo = (window.FPhoto ? FPhoto.LIBRARY : []).find(p => p.id === t.dataset.id);
+    if (photo) bodyRTE.insertImage(photo);
+    closePhotoModal();
+  });
+  function openPhotoModal() {
+    if (!photoFilters.children.length) buildPhotoFilters();
+    paintPhotoGrid();
+    photoModal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closePhotoModal() { photoModal.hidden = true; document.body.style.overflow = ''; }
+  document.getElementById('photo-close').onclick = closePhotoModal;
+  photoModal.addEventListener('click', e => { if (e.target === photoModal) closePhotoModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !photoModal.hidden) closePhotoModal(); });
+}
+
+/* ============ Helpers de niveau module ============ */
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function makeId(title) {
+  const base = String(title).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'histoire';
+  return base + '-' + Date.now().toString(36);
+}
+
+async function readImportedFile(file) {
+  const name = (file.name || '').toLowerCase();
+  if (name.endsWith('.txt') || name.endsWith('.text') || name.endsWith('.md')) {
+    return await file.text();
+  }
+  if (name.endsWith('.docx')) {
+    const xml = await unzipEntryText(await file.arrayBuffer(), 'word/document.xml');
+    return docxToText(xml);
+  }
+  if (name.endsWith('.odt')) {
+    const xml = await unzipEntryText(await file.arrayBuffer(), 'content.xml');
+    return odtToText(xml);
+  }
+  if (name.endsWith('.doc') || name.endsWith('.rtf') || name.endsWith('.pages')) {
+    throw new Error('Format non pris en charge — exportez votre fichier en .docx, puis réimportez-le.');
+  }
+  return await file.text();
+}
+
+async function unzipEntryText(arrayBuffer, entryName) {
+  const bytes = new Uint8Array(arrayBuffer);
+  const dv = new DataView(arrayBuffer);
+  let eocd = -1;
+  const minScan = Math.max(0, bytes.length - 22 - 65536);
+  for (let i = bytes.length - 22; i >= minScan; i--) {
+    if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error('Document illisible (archive introuvable).');
+  const count = dv.getUint16(eocd + 10, true);
+  let p = dv.getUint32(eocd + 16, true);
+  let target = null;
+  for (let n = 0; n < count; n++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) break;
+    const method = dv.getUint16(p + 10, true);
+    const compSize = dv.getUint32(p + 20, true);
+    const nameLen = dv.getUint16(p + 28, true);
+    const extraLen = dv.getUint16(p + 30, true);
+    const commentLen = dv.getUint16(p + 32, true);
+    const localOff = dv.getUint32(p + 42, true);
+    const fname = new TextDecoder().decode(bytes.subarray(p + 46, p + 46 + nameLen));
+    if (fname === entryName) { target = { method, compSize, localOff }; break; }
+    p += 46 + nameLen + extraLen + commentLen;
+  }
+  if (!target) throw new Error('Contenu texte introuvable dans le document.');
+  if (dv.getUint32(target.localOff, true) !== 0x04034b50) throw new Error('Document corrompu.');
+  const lNameLen = dv.getUint16(target.localOff + 26, true);
+  const lExtraLen = dv.getUint16(target.localOff + 28, true);
+  const dataStart = target.localOff + 30 + lNameLen + lExtraLen;
+  const comp = bytes.subarray(dataStart, dataStart + target.compSize);
+  let raw;
+  if (target.method === 0) raw = comp;
+  else if (target.method === 8) raw = await inflateRaw(comp);
+  else throw new Error('Compression non prise en charge dans ce document.');
+  return new TextDecoder('utf-8').decode(raw);
+}
+
+async function inflateRaw(bytes) {
+  if (typeof DecompressionStream === 'undefined') throw new Error('Votre navigateur ne peut pas décompresser ce fichier.');
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  const ab = await new Response(stream).arrayBuffer();
+  return new Uint8Array(ab);
+}
+
+function decodeXmlEntities(s) {
+  return String(s)
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(parseInt(d, 10)))
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+    .replace(/&amp;/g, '&');
+}
+function docxToText(xml) {
+  const paras = xml.split(/<\/w:p>/);
+  const lines = paras.map(p => {
+    p = p.replace(/<w:br\s*\/?>/g, '\n').replace(/<w:tab\s*\/?>/g, '\t');
+    const out = [];
+    const re = /<w:t\b[^>]*>([\s\S]*?)<\/w:t>/g;
+    let m;
+    while ((m = re.exec(p))) out.push(decodeXmlEntities(m[1]));
+    return out.join('');
+  });
+  return lines.join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+function odtToText(xml) {
+  const blocks = xml.split(/<\/text:(?:p|h)>/);
+  const lines = blocks.map(b => {
+    b = b.replace(/<text:line-break\s*\/?>/g, '\n').replace(/<text:tab\s*\/?>/g, '\t');
+    const idx = Math.max(b.lastIndexOf('<text:p'), b.lastIndexOf('<text:h'));
+    let seg = idx >= 0 ? b.slice(idx) : b;
+    seg = seg.replace(/<[^>]+>/g, '');
+    return decodeXmlEntities(seg);
+  });
+  return lines.join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+</script>
+<script src="auth.js"></script>
+</body>
+</html>

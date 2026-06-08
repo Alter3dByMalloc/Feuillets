@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feuillets · Les auteurs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1c1a18;
+    --bg-soft:#211f1c;
+    --ink:#f4f0ea;
+    --soft:#c7c0b6;
+    --muted:#8a837a;
+    --faint:#6f685f;
+    --line:#37322d;
+    --line-2:#46403a;
+    --accent:#c4774e;
+    --serif:"Playfair Display", Georgia, serif;
+    --book:"Lora", Georgia, serif;
+    --sans:"Mulish", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;}
+  a{color:inherit;text-decoration:none;}
+  .page{max-width:1120px;margin:0 auto;}
+
+  /* ---------- Header ---------- */
+  header{display:flex;align-items:center;gap:34px;padding:20px 22px;border-bottom:1px solid var(--line);}
+  .logo{font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.01em;line-height:1;color:inherit;text-decoration:none;}
+  .logo i{font-style:italic;font-weight:500;color:var(--accent);}
+  nav{display:flex;align-items:center;gap:30px;margin-left:6px;}
+  nav a{font-size:14.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;opacity:.92;transition:opacity .2s,color .2s;}
+  nav a:hover{color:var(--accent);opacity:1;}
+  nav a.active{color:var(--accent);opacity:1;}
+  .actions{margin-left:auto;display:flex;align-items:center;gap:20px;}
+  .search{background:none;border:none;color:var(--ink);cursor:pointer;display:flex;opacity:.9;transition:color .2s;}
+  .search:hover{color:var(--accent);}
+  .btn-line{font-family:var(--sans);border:1px solid var(--line);background:none;color:var(--ink);padding:13px 26px;font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,background .2s;}
+  .btn-line:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+  .btn-publish{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);border:1px solid var(--accent);background:var(--accent);color:#1c1a18;text-decoration:none;padding:13px 22px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s;}
+  .btn-publish:hover{background:#d4865c;border-color:#d4865c;}
+  .btn-publish svg{width:16px;height:16px;}
+
+  /* ---------- Head ---------- */
+  .cat-head{padding:42px 22px 34px;}
+  .kicker{font-size:12.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .cat-head h1{font-family:var(--serif);font-weight:800;font-size:46px;line-height:1.04;letter-spacing:-.01em;color:#fbf8f3;}
+  .cat-head p{font-family:var(--book);font-style:italic;font-size:18px;color:var(--soft);margin-top:14px;max-width:54ch;}
+
+  /* ---------- Grid ---------- */
+  .frame{border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1px;background:var(--line);
+    border-left:1px solid var(--line);border-right:1px solid var(--line);}
+  .author{background:var(--bg);padding:30px 28px 26px;display:flex;flex-direction:column;}
+  .a-head{display:block;color:inherit;text-decoration:none;}
+  .a-head:hover .a-name{color:var(--accent);}
+  .a-name{transition:color .18s;}
+  .avatar{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-weight:700;font-size:20px;margin-bottom:20px;flex:none;letter-spacing:.01em;}
+  .a-name{font-family:var(--serif);font-weight:700;font-size:24px;line-height:1.12;color:#fbf8f3;margin-bottom:9px;}
+  .a-role{font-size:11.5px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+  .a-role .g{position:relative;}
+  .a-role .g + .g{margin-left:13px;}
+  .a-role .g + .g::before{content:"·";position:absolute;left:-9px;color:var(--faint);}
+  .a-bio{font-family:var(--book);font-style:italic;font-size:15.5px;line-height:1.56;color:var(--soft);margin-bottom:24px;}
+  .a-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:18px;display:flex;align-items:center;gap:14px;
+    color:inherit;text-decoration:none;margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px;
+    transition:background .18s;}
+  .a-foot:hover{background:rgba(255,255,255,.025);}
+  .a-stats{display:flex;align-items:stretch;flex:1;}
+  .a-stat{display:flex;flex-direction:column;gap:6px;}
+  .a-stat + .a-stat{margin-left:20px;padding-left:20px;border-left:1px solid var(--line);}
+  .a-foot-go{flex:none;color:var(--faint);opacity:0;transform:translateX(-4px);transition:opacity .18s,transform .18s,color .18s;}
+  .a-foot:hover .a-foot-go{opacity:1;transform:translateX(0);color:var(--accent);}
+  .a-stat .v{font-family:var(--serif);font-weight:700;font-size:25px;line-height:1;color:#fbf8f3;display:inline-flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;}
+  .a-stat .v .star{color:#e0b341;font-size:20px;}
+  .a-stat .l{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+
+  footer{height:60px;}
+  @media (max-width:620px){ nav{display:none;} }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <a class="logo" href="Feuillets.html">Feui<i>llets</i></a>
+    <nav>
+      <a href="Catalogue.html">Le catalogue</a>
+      <a class="active" href="Auteurs.html">Auteurs</a>
+    </nav>
+    <div class="actions">
+      <a class="btn-publish" href="NouvellePublication.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        Publier
+      </a>
+      <a class="btn-line" href="Connexion.html">Connexion</a>
+    </div>
+  </header>
+
+  <div class="cat-head">
+    <div class="kicker">Les plumes</div>
+    <h1>Les auteurs</h1>
+    <p>Douze voix, douze univers — celles et ceux qui signent les histoires publiées sur Feuillets.</p>
+  </div>
+
+  <div class="frame">
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <footer></footer>
+</div>
+
+<script src="series.js"></script>
+<script>
+const THEME_COLOR = {
+  'Polar':'#c4774e','Thriller':'#c25c4a','Science-fiction':'#6791c4',
+  'Fantasy':'#b277c2','Roman':'#c97a9c','Témoignage':'#5ea283','Nouvelle':'#8a9d6a'
+};
+
+const AUTHORS = [
+  {name:"Nadia Ahmadi", role:"Autrice", bio:"Raconte l'exil et la reconstruction avec une pudeur qui n'exclut jamais la lumière.",
+   work:{title:"Kaboul, l'été de mes quinze ans", slug:"kaboul-quinze-ans", themes:['Témoignage'], rating:"4,9"}, ratings:["4,9","4,7"]},
+  {name:"Sophie Arnaud", role:"Autrice", bio:"Cisèle des nouvelles solaires où l'enfance se dénoue tout en délicatesse.",
+   work:{title:"Le Dernier Été à Paros", slug:"le-dernier-ete-a-paros", themes:['Nouvelle','Roman'], rating:"4,6"}, ratings:["4,6","4,5"]},
+  {name:"Jean-Luc Breton", role:"Auteur", bio:"Signe des polars où l'esthétique du crime confine au vertige.",
+   work:{title:"L'Architecte des Ombres", slug:"l-architecte-des-ombres", themes:['Polar','Thriller'], rating:"4,8"}, ratings:["4,8","4,6"]},
+  {name:"Marc Duval", role:"Auteur", bio:"Ressuscite le Paris des affaires non résolues et des rancunes patientes.",
+   work:{title:"Vengeance à Montmartre", slug:"vengeance-a-montmartre", themes:['Polar'], rating:"4,5"}, ratings:["4,5","4,4"]},
+  {name:"Claire Fontaine", role:"Autrice", bio:"Explore les héritages intimes et les vérités que les familles préfèrent enterrer.",
+   work:{title:"Les Cendres du Lendemain", slug:"les-cendres-du-lendemain", themes:['Roman'], rating:"4,5"}, ratings:["4,5","4,4"]},
+  {name:"Thomas Leray", role:"Auteur", bio:"Imagine des futurs proches où la technologie touche au plus intime de l'humain.",
+   work:{title:"Mémoire Vive", slug:"memoire-vive", themes:['Science-fiction'], rating:"4,6"}, ratings:["4,6","4,5"]},
+  {name:"Hélène Marquet", role:"Autrice", bio:"Excelle dans les huis clos où la civilité n'est qu'un vernis sur la peur.",
+   work:{title:"La Maison aux Volets Clos", slug:"la-maison-aux-volets-clos", themes:['Thriller','Polar'], rating:"4,8"}, ratings:["4,8","4,7"]},
+  {name:"Élise Morvan", role:"Autrice", bio:"Écrit des nouvelles où les gares, les couloirs et les chambres d'hôtel deviennent des seuils.",
+   work:{title:"Le Dernier Train pour Minuit", slug:"le-dernier-train-pour-minuit", themes:['Thriller'], rating:"4,7"}, ratings:["4,7","4,6","4,6","4,5"]},
+  {name:"Paul Renard", role:"Auteur", bio:"Explore les vertiges du temps long et les espoirs que l'on transmet malgré tout.",
+   work:{title:"Les Enfants du Vide", slug:"les-enfants-du-vide", themes:['Science-fiction'], rating:"4,7"}, ratings:["4,7","4,6","4,6","4,7","4,5"]},
+  {name:"Camille Roy", role:"Autrice", bio:"Signe des récits épistolaires sur le deuil, l'écriture et la présence des absents.",
+   work:{title:"Lettres à personne", slug:"lettres-a-personne", themes:['Roman','Témoignage'], rating:"4,7"}, ratings:["4,7","4,6"]},
+  {name:"Julien Sorel", role:"Auteur", bio:"Construit des fantasies oniriques à la lisière de la veille et du sommeil.",
+   work:{title:"Le Cartographe des Rêves", slug:"le-cartographe-des-reves", themes:['Fantasy'], rating:"4,5"}, ratings:["4,5","4,4"]},
+  {name:"Amélie Voss", role:"Autrice", bio:"Tisse des fantasies lumineuses où le merveilleux a toujours un prix.",
+   work:{title:"La Gardienne du Phare", slug:"la-gardienne-du-phare", themes:['Fantasy'], rating:"4,4"}, ratings:["4,4","4,3"]}
+];
+
+function initials(name){
+  const w = name.split(/[\s-]+/).filter(Boolean);
+  return ((w[0]||'')[0] + (w[w.length-1]||'')[0]).toUpperCase();
+}
+function slugify(name){
+  return name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+function avgRating(ratings){
+  const n = ratings.map(r=>parseFloat(r.replace(',', '.')));
+  const m = n.reduce((a,b)=>a+b,0)/n.length;
+  return m.toFixed(1).replace('.', ',');
+}
+
+const grid = document.getElementById('grid');
+AUTHORS.forEach(a=>{
+  const color = THEME_COLOR[a.work.themes[0]] || 'var(--accent)';
+  const roleHtml = `<span class="g">${a.role}</span>` +
+    a.work.themes.map(t=>`<span class="g" style="color:${THEME_COLOR[t]}">${t}</span>`).join('');
+  const el = document.createElement('div');
+  el.className = 'author';
+  const authorSlug = slugify(a.name);
+  const nbSeries = FS.seriesCountByAuthor(authorSlug);
+  const seriesStat = nbSeries>0
+    ? `<div class="a-stat"><span class="v">${nbSeries}</span><span class="l">${nbSeries>1?'Séries':'Série'}</span></div>`
+    : '';
+  el.innerHTML = `
+    <a class="a-head" href="Auteur.html?id=${authorSlug}">
+      <div class="avatar" style="background:color-mix(in srgb, ${color} 15%, transparent);border:1px solid color-mix(in srgb, ${color} 55%, transparent);color:${color}">${initials(a.name)}</div>
+      <div class="a-name">${a.name}</div>
+      <div class="a-role">${roleHtml}</div>
+      <div class="a-bio">${a.bio}</div>
+    </a>
+    <a class="a-foot" href="Auteur.html?id=${authorSlug}">
+      <div class="a-stats">
+        <div class="a-stat"><span class="v">${a.ratings.length}</span><span class="l">${a.ratings.length>1?'Histoires':'Histoire'}</span></div>
+        ${seriesStat}
+        <div class="a-stat"><span class="v"><span class="star">★</span> ${avgRating(a.ratings)}</span><span class="l">Note moy.</span></div>
+      </div>
+      <span class="a-foot-go"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+    </a>`;
+  grid.appendChild(el);
+});
+</script>
+<script src="auth.js"></script>
+</body>
+</html>

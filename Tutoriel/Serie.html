@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feuillets · Série</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1c1a18;
+    --bg-soft:#211f1c;
+    --ink:#f4f0ea;
+    --soft:#c7c0b6;
+    --muted:#8a837a;
+    --faint:#6f685f;
+    --line:#37322d;
+    --line-2:#46403a;
+    --accent:#c4774e;
+    --serif:"Playfair Display", Georgia, serif;
+    --book:"Lora", Georgia, serif;
+    --sans:"Mulish", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;}
+  a{color:inherit;text-decoration:none;}
+  .page{max-width:1120px;margin:0 auto;}
+
+  /* ---------- Header ---------- */
+  header{display:flex;align-items:center;gap:34px;padding:20px 22px;border-bottom:1px solid var(--line);}
+  .logo{font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.01em;line-height:1;}
+  .logo i{font-style:italic;font-weight:500;color:var(--accent);}
+  nav{display:flex;align-items:center;gap:30px;margin-left:6px;}
+  nav a{font-size:14.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;opacity:.92;transition:opacity .2s,color .2s;}
+  nav a:hover{color:var(--accent);opacity:1;}
+  .actions{margin-left:auto;display:flex;align-items:center;gap:20px;}
+  .search{background:none;border:none;color:var(--ink);cursor:pointer;display:flex;opacity:.9;transition:color .2s;}
+  .search:hover{color:var(--accent);}
+  .btn-line{font-family:var(--sans);border:1px solid var(--line);background:none;color:var(--ink);padding:13px 26px;font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,background .2s;}
+  .btn-line:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+  .btn-publish{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);border:1px solid var(--accent);background:var(--accent);color:#1c1a18;text-decoration:none;padding:13px 22px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s;}
+  .btn-publish:hover{background:#d4865c;border-color:#d4865c;}
+  .btn-publish svg{width:16px;height:16px;}
+
+  /* ---------- Profile ---------- */
+  .wrap{padding:0 22px;}
+  .back{display:inline-flex;align-items:center;gap:9px;margin-top:34px;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .2s,gap .2s;}
+  .back:hover{color:var(--accent);gap:13px;}
+
+  .s-head{padding:34px 0 40px;border-bottom:1px solid var(--line);}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;}
+  .eyebrow svg{width:15px;height:15px;}
+  .s-themes{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:20px;}
+  .tlabel{font-size:12.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;position:relative;}
+  .tlabel + .tlabel::before{content:"·";position:absolute;left:-10px;color:var(--faint);}
+  .s-head h1{font-family:var(--serif);font-weight:800;font-size:50px;line-height:1.03;letter-spacing:-.01em;color:#fbf8f3;}
+  .s-by{font-size:15px;color:var(--muted);margin-top:14px;}
+  .s-by a{color:var(--soft);transition:color .18s;}
+  .s-by a:hover{color:var(--accent);}
+  .s-desc{font-family:var(--book);font-style:italic;font-size:21px;line-height:1.62;color:var(--soft);max-width:62ch;margin-top:24px;}
+  .s-stats{display:flex;flex-wrap:wrap;gap:0;margin-top:30px;}
+  .stat{display:flex;flex-direction:column;gap:5px;}
+  .stat .v{font-family:var(--serif);font-weight:700;font-size:24px;color:#fbf8f3;display:inline-flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums;}
+  .stat .v .star{color:#e0b341;font-size:20px;}
+  .stat .l{font-size:11.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);}
+  .stat + .stat{margin-left:30px;padding-left:30px;border-left:1px solid var(--line);}
+  .s-chars{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;}
+  .chip{font-size:12.5px;font-weight:500;color:var(--soft);border:1px solid var(--line-2);border-radius:999px;padding:6px 13px;}
+  .fav-row{margin-top:28px;}
+  .fav-row:empty{display:none;}
+
+  /* ---------- Tomes ---------- */
+  .tomes{padding:34px 22px 70px;}
+  .tomes > h2{font-size:13px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+  .tomes > .sub{font-family:var(--book);font-style:italic;font-size:15px;color:var(--faint);margin-bottom:26px;}
+  .tome{display:flex;gap:26px;align-items:stretch;border:1px solid var(--line);background:var(--bg);
+    padding:26px 28px;transition:border-color .2s,background .2s;}
+  .tome + .tome{border-top:none;}
+  .tome:hover{border-color:var(--line-2);background:var(--bg-soft);}
+  .tome-num{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;padding-right:26px;border-right:1px solid var(--line);}
+  .tome-num .k{font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);}
+  .tome-num .n{font-family:var(--serif);font-weight:700;font-size:40px;line-height:1;color:var(--accent);}
+  .tome-body{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .tome-themes{display:flex;flex-wrap:wrap;gap:8px 12px;margin-bottom:10px;}
+  .tlabel.sm{font-size:11px;}
+  .tome-body h3{font-family:var(--serif);font-weight:700;font-size:25px;line-height:1.14;color:#fbf8f3;margin-bottom:11px;}
+  .tome-body h3 a{transition:color .18s;}
+  .tome-body h3 a:hover{color:var(--accent);}
+  .tome-excerpt{font-family:var(--book);font-style:italic;font-size:16px;line-height:1.55;color:var(--soft);margin-bottom:18px;}
+  .tome-meta{margin-top:auto;font-size:13.5px;color:var(--muted);display:flex;align-items:center;gap:7px;}
+  .tome-meta .star{color:#e0b341;}
+  .tome-meta .read-cta{margin-left:auto;display:inline-flex;align-items:center;gap:8px;color:var(--soft);
+    font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;transition:color .18s,gap .18s;}
+  .tome:hover .read-cta{color:var(--accent);gap:12px;}
+
+  footer{height:50px;}
+  @media (max-width:620px){
+    nav{display:none;}
+    .s-head h1{font-size:36px;}
+    .tome{flex-direction:column;gap:16px;}
+    .tome-num{flex-direction:row;gap:12px;padding-right:0;border-right:none;border-bottom:1px solid var(--line);padding-bottom:14px;}
+    .tome-num .n{font-size:30px;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <a class="logo" href="Feuillets.html">Feui<i>llets</i></a>
+    <nav>
+      <a href="Catalogue.html">Le catalogue</a>
+      <a href="Auteurs.html">Auteurs</a>
+    </nav>
+    <div class="actions">
+      <a class="btn-publish" href="NouvellePublication.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        Publier
+      </a>
+      <a class="btn-line" href="Connexion.html">Connexion</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <a class="back" href="Catalogue.html?view=series">← Toutes les séries</a>
+    <div class="s-head">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a2 2 0 0 1 2 2v14"></path><path d="M8 4v16"></path><path d="M20 7v13H6"></path></svg>
+        Série
+      </div>
+      <div class="s-themes" id="themes"></div>
+      <h1 id="title"></h1>
+      <div class="s-by" id="by"></div>
+      <p class="s-desc" id="desc"></p>
+      <div class="s-stats" id="stats"></div>
+      <div class="s-chars" id="chars"></div>
+      <div class="fav-row" id="fav-row"></div>
+    </div>
+  </div>
+
+  <div class="tomes">
+    <h2>Les histoires de la série</h2>
+    <div class="sub">À lire dans l'ordre — chaque tome prolonge le précédent.</div>
+    <div id="tome-list"></div>
+  </div>
+
+  <footer></footer>
+</div>
+
+<script src="series.js"></script>
+<script src="publications.js"></script>
+<script src="favoris.js"></script>
+<script>
+const THEME_COLOR = {
+  'Polar':'#c4774e','Thriller':'#c25c4a','Science-fiction':'#6791c4',
+  'Fantasy':'#b277c2','Roman':'#c97a9c','Témoignage':'#5ea283','Nouvelle':'#8a9d6a'
+};
+
+// Excerpts (deks) repris des histoires pour donner un aperçu de chaque tome
+const EXCERPTS = {
+  'le-dernier-train-pour-minuit':"Elle ne devait jamais monter dans ce train. Pourtant, le quai 9 l'attendait, silencieux comme un secret.",
+  'chambre-313':"L'hôtel n'avait pas de treizième étage. Pourtant, sa clé portait le numéro 313, et l'ascenseur, lui, savait où aller.",
+  'les-enfants-du-vide':"À bord d'un vaisseau-génération, la dernière génération née en route apprend qu'aucune planète ne les attend.",
+  'la-derniere-sonde':"Lancée avant l'extinction, une sonde continue d'émettre vers une Terre qui ne répond plus. Quelqu'un, pourtant, l'écoute encore.",
+  'la-premiere-graine':"On lui avait confié une graine et un siècle. Sur Erebus, monde de cendre et de gel, elle planta la première — sachant qu'elle ne verrait jamais l'arbre.",
+  'la-derniere-recolte':"Quatre générations plus tard, Erebus a des forêts. Mais le jour de la première récolte, le monde découvre qu'il attendait, lui aussi, quelque chose des jardiniers."
+};
+
+const id = new URLSearchParams(location.search).get('id');
+const s = FS.byId[id] || (window.FP && FP.seriesById(id)) || FS.SERIES[0];
+
+document.title = "Feuillets · " + s.title;
+document.getElementById('themes').innerHTML =
+  s.themes.map(t=>`<span class="tlabel" style="color:${THEME_COLOR[t]||'var(--accent)'}">${t}</span>`).join('');
+document.getElementById('title').textContent = s.title;
+document.getElementById('by').innerHTML = s.authorSlug
+  ? `Une série de <a href="Auteur.html?id=${s.authorSlug}">${s.author}</a>`
+  : `Une série de ${s.author}`;
+document.getElementById('desc').textContent = s.description;
+const ratingVal = s.rating==null ? 'Nouveau' : `<span class="star">★</span> ${FS.fmt(s.rating)}`;
+document.getElementById('stats').innerHTML = `
+  <div class="stat"><span class="v">${s.count}</span><span class="l">Histoires</span></div>
+  <div class="stat"><span class="v">${ratingVal}</span><span class="l">Note moyenne</span></div>
+  <div class="stat"><span class="v">${s.time} min</span><span class="l">Durée totale</span></div>
+  <div class="stat"><span class="v">${s.readers.toLocaleString('fr-FR')}</span><span class="l">Lecteurs</span></div>`;
+document.getElementById('chars').innerHTML =
+  s.chars.map(c=>`<span class="chip">${c}</span>`).join('');
+
+// ---- Mettre la série en favoris (réservé aux lecteurs connectés) ----
+if(window.FeuilletsFav && FeuilletsFav.isLoggedIn()){
+  document.getElementById('fav-row').appendChild(FeuilletsFav.favPill('series', s.id));
+}
+
+const list = document.getElementById('tome-list');
+s.stories.forEach((st, i)=>{
+  const themesHtml = st.themes.map(t=>`<span class="tlabel sm" style="color:${THEME_COLOR[t]}">${t}</span>`).join('');
+  const row = document.createElement('div');
+  row.className = 'tome';
+  row.innerHTML = `
+    <div class="tome-num"><span class="k">Tome</span><span class="n">${i+1}</span></div>
+    <div class="tome-body">
+      <div class="tome-themes">${themesHtml}</div>
+      <h3><a href="Histoire.html?id=${st.slug}">${st.title}</a></h3>
+      <p class="tome-excerpt">${EXCERPTS[st.slug]||st.description||''}</p>
+      <div class="tome-meta"><span>${st.time} min de lecture</span><span>·</span><span>${st.rating==null?'Nouveau':'<span class="star">★</span> '+FS.fmt(st.rating)}</span>
+        <a class="read-cta" href="Histoire.html?id=${st.slug}">Lire ce tome →</a></div>
+    </div>`;
+  list.appendChild(row);
+});
+</script>
+<script src="auth.js"></script>
+</body>
+</html>

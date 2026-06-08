@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feuillets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1c1a18;
+    --ink:#f4f0ea;
+    --soft:#c7c0b6;
+    --muted:#8a837a;
+    --faint:#6f685f;
+    --line:#37322d;
+    --accent:#c4774e;   /* terracotta */
+    --purple:#b277c2;
+    --blue:#6791c4;
+    --green:#5ea283;
+    --serif:"Playfair Display", Georgia, serif;
+    --book:"Lora", Georgia, serif;
+    --sans:"Mulish", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.5;
+  }
+  .page{max-width:940px;margin:0 auto;}
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;align-items:center;gap:34px;
+    padding:20px 22px;
+    border-bottom:1px solid var(--line);
+  }
+  .logo{font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.01em;line-height:1;color:inherit;text-decoration:none;}
+  .logo i{font-style:italic;font-weight:500;color:var(--accent);}
+  nav{display:flex;align-items:center;gap:30px;margin-left:6px;}
+  nav a{
+    color:var(--ink);text-decoration:none;
+    font-size:14.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;
+    opacity:.92;transition:opacity .2s,color .2s;
+  }
+  nav a:hover{color:var(--accent);opacity:1;}
+  .actions{margin-left:auto;display:flex;align-items:center;gap:20px;}
+  .search{background:none;border:none;color:var(--ink);cursor:pointer;display:flex;opacity:.9;transition:color .2s;}
+  .search:hover{color:var(--accent);}
+  .btn-line{
+    font-family:var(--sans);
+    border:1px solid var(--line);
+    background:none;color:var(--ink);
+    text-decoration:none;
+    padding:13px 26px;
+    font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+    cursor:pointer;transition:border-color .2s,background .2s;
+  }
+  .btn-line:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+  .btn-publish{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);border:1px solid var(--accent);background:var(--accent);color:#1c1a18;text-decoration:none;padding:13px 22px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s;}
+  .btn-publish:hover{background:#d4865c;border-color:#d4865c;}
+  .btn-publish svg{width:16px;height:16px;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    display:grid;grid-template-columns:1fr 1fr;
+    border-left:1px solid var(--line);border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    color:inherit;text-decoration:none;transition:background .2s;
+  }
+  .hero:hover{background:rgba(255,255,255,.02);}
+  .hero:hover .illus{transform:scale(1.04);}
+  .hero-left{padding:46px 30px 50px;}
+  .hero-right{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:40px;
+  }
+  .illus{transition:transform .25s ease;}
+  .kicker{
+    font-size:12.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:24px;
+  }
+  .hero h1{
+    font-family:var(--serif);font-weight:800;
+    font-size:44px;line-height:1.05;letter-spacing:-.01em;
+    margin-bottom:28px;color:#fbf8f3;
+  }
+  .quote{
+    font-family:var(--book);font-style:italic;font-weight:400;
+    font-size:21px;line-height:1.62;color:var(--soft);
+    margin-bottom:34px;max-width:30ch;
+  }
+  .byline{font-size:14.5px;color:var(--muted);line-height:1.5;margin-bottom:30px;}
+  .cta{
+    display:inline-flex;align-items:center;gap:10px;
+    border:1px solid var(--line);background:none;color:var(--ink);
+    font-family:var(--sans);font-size:13.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;
+    padding:17px 28px;cursor:pointer;text-decoration:none;transition:border-color .2s,background .2s;
+  }
+  .cta:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+  .illus{font-size:96px;line-height:1;filter:saturate(1.05);margin:auto 0;}
+  .illus-cap{font-size:14px;color:var(--muted);margin-top:auto;padding-top:38px;}
+
+  /* ---------- Genre tabs ---------- */
+  .tabs{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
+    margin-top:24px;
+  }
+  .tab{
+    border:1px solid var(--line);
+    padding:18px 16px;min-height:78px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;line-height:1.18;
+    color:var(--soft);cursor:pointer;text-decoration:none;transition:border-color .2s,color .2s,background .2s;
+  }
+  .tab:hover{border-color:var(--accent);color:var(--ink);}
+  .tab.active{font-style:normal;font-weight:700;color:#fbf8f3;background:rgba(255,255,255,.025);border-color:#4a443d;}
+
+  /* ---------- À la une ---------- */
+  .alaune{margin-top:48px;}
+  .section-head{
+    font-size:13px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--muted);padding:6px 22px 22px;
+    border-bottom:1px solid var(--line);
+  }
+  .trio{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border-left:1px solid var(--line);border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .brief{padding:30px 28px 34px;display:block;color:inherit;text-decoration:none;transition:background .2s;}
+  .brief:hover{background:rgba(255,255,255,.02);}
+  .brief + .brief{border-left:1px solid var(--line);}
+  .label{
+    font-size:12px;font-weight:600;letter-spacing:.17em;text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .label.roman{color:var(--purple);}
+  .label.sf{color:var(--blue);}
+  .label.temoignage{color:var(--green);}
+  .label.polar{color:var(--accent);}
+  .label.fantasy{color:var(--purple);}
+  .label.nouvelle{color:var(--green);}
+  .brief h3{
+    font-family:var(--serif);font-weight:700;font-size:25px;line-height:1.14;
+    margin-bottom:18px;color:#fbf8f3;
+  }
+  .brief p{
+    font-family:var(--book);font-style:italic;font-size:16.5px;line-height:1.55;
+    color:var(--soft);margin-bottom:24px;
+  }
+  .brief .meta{font-size:14px;color:var(--muted);}
+  .brief .meta .star, .mini .meta .star{color:#e0b341;}
+
+  .lower{
+    display:grid;grid-template-columns:2fr 1fr;
+    border-left:1px solid var(--line);border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .feature{padding:34px 30px 40px;display:block;color:inherit;text-decoration:none;transition:background .2s;}
+  .feature:hover{background:rgba(255,255,255,.02);}
+  .feature .label{margin-bottom:22px;}
+  .feature h2{
+    font-family:var(--serif);font-weight:700;font-size:40px;line-height:1.05;
+    margin-bottom:24px;color:#fbf8f3;letter-spacing:-.005em;
+  }
+  .feature p{
+    font-family:var(--book);font-style:italic;font-size:21px;line-height:1.55;
+    color:var(--soft);margin-bottom:28px;max-width:40ch;
+  }
+  .feature .meta{font-size:14.5px;color:var(--muted);margin-bottom:30px;}
+  .feature .meta .star{color:#e0b341;font-style:normal;}
+
+  .sidelist{border-left:1px solid var(--line);display:flex;flex-direction:column;}
+  .mini{padding:22px 26px 24px;display:block;color:inherit;text-decoration:none;transition:background .2s;}
+  .mini:hover{background:rgba(255,255,255,.02);}
+  .mini + .mini{border-top:1px solid var(--line);}
+  .mini .label{margin-bottom:11px;}
+  .mini h4{
+    font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.15;
+    margin-bottom:9px;color:#fbf8f3;
+  }
+  .mini .meta{font-size:14px;color:var(--muted);}
+
+  /* ---------- Badge série sur les encarts ---------- */
+  .serie-mini-flag{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);margin-bottom:13px;}
+  .serie-mini-flag svg{width:12px;height:12px;flex:none;}
+  .hero .serie-mini-flag{margin-bottom:16px;}
+
+  /* ---------- Espace Séries ---------- */
+  .series-feature{margin-top:48px;}
+  .series-cols{display:grid;grid-template-columns:1fr 1fr;
+    border-left:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .series-col + .series-col{border-left:1px solid var(--line);}
+  .col-label{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:22px 28px 0;}
+  .serie-card{display:block;padding:16px 28px 30px;color:inherit;text-decoration:none;transition:background .2s;}
+  .serie-card:hover{background:rgba(255,255,255,.02);}
+  .serie-tag{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .serie-tag svg{width:14px;height:14px;}
+  .serie-card h3{font-family:var(--serif);font-weight:700;font-size:27px;line-height:1.1;color:#fbf8f3;margin-bottom:14px;}
+  .serie-card > p{font-family:var(--book);font-style:italic;font-size:16.5px;line-height:1.55;color:var(--soft);margin-bottom:22px;}
+  .serie-toc{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-direction:column;gap:9px;}
+  .serie-toc li{display:flex;align-items:baseline;gap:11px;font-family:var(--book);font-size:15.5px;line-height:1.35;color:var(--soft);}
+  .serie-toc li .tn{font-family:var(--sans);font-size:11px;font-weight:700;color:var(--accent);flex:none;
+    border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);border-radius:3px;padding:1px 7px;position:relative;top:-1px;}
+  .serie-meta{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px;}
+  .serie-meta .star{color:#e0b341;}
+  .serie-meta .ar{margin-left:auto;color:var(--faint);font-size:17px;transition:color .18s,transform .18s;}
+  .serie-card:hover .serie-meta .ar{color:var(--accent);transform:translateX(3px);}
+  @media (max-width:680px){ .series-cols{grid-template-columns:1fr;} .series-col + .series-col{border-left:none;border-top:1px solid var(--line);} }
+
+  /* ---------- Cœur favoris sur les encarts d'histoires ---------- */
+  .hero,.brief,.feature,.mini,.serie-card{position:relative;}
+  body.fav-on .mini h4{padding-right:34px;}
+  body.fav-on .brief h3{padding-right:30px;}
+  body.fav-on .serie-card .serie-tag{padding-right:34px;}
+  body.fav-on .feature>.fav-heart,body.fav-on .hero>.fav-heart{top:22px;right:22px;}
+
+  footer{height:60px;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header>
+    <a class="logo" href="Feuillets.html">Feui<i>llets</i></a>
+    <nav>
+      <a href="Catalogue.html">Le catalogue</a>
+      <a href="Auteurs.html">Auteurs</a>
+    </nav>
+    <div class="actions">
+      <a class="btn-publish" href="NouvellePublication.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        Publier
+      </a>
+      <a class="btn-line" href="Connexion.html">Connexion</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <a class="hero" href="Histoire.html?id=le-dernier-train-pour-minuit">
+    <div class="hero-left">
+      <div class="kicker">Histoire de la semaine · Thriller</div>
+      <h1>Le Dernier Train<br>pour Minuit</h1>
+      <p class="quote">« Elle ne devait jamais monter dans ce train. Pourtant, le quai 9 l'attendait, silencieux comme un secret. »</p>
+      <p class="byline">Par Élise Morvan · 12 min de lecture · 4 832 lecteurs</p>
+      <span class="cta">Lire l'histoire <span>↗</span></span>
+    </div>
+    <div class="hero-right">
+      <div class="illus">🚂</div>
+      <div class="illus-cap">Illustration · Thriller nocturne</div>
+    </div>
+  </a>
+
+  <!-- Genre tabs -->
+  <div class="tabs">
+    <a class="tab active" href="Catalogue.html">Tous les genres</a>
+    <a class="tab" href="Catalogue.html?themes=Thriller,Polar">Thriller &amp; Polar</a>
+    <a class="tab" href="Catalogue.html?themes=Roman,Nouvelle">Romans &amp; Nouvelles</a>
+    <a class="tab" href="Catalogue.html?themes=Science-fiction">Science-fiction</a>
+    <a class="tab" href="Catalogue.html?themes=Témoignage">Histoires de vie</a>
+    <a class="tab" href="Catalogue.html?themes=Fantasy">Fantasy</a>
+  </div>
+
+  <!-- À la une -->
+  <section class="alaune">
+    <div class="section-head">À la une cette semaine</div>
+
+    <div class="trio">
+      <a class="brief" href="Histoire.html?id=les-cendres-du-lendemain">
+        <div class="label roman">Roman</div>
+        <h3>Les Cendres du Lendemain</h3>
+        <p>Une femme retrouve les lettres de sa mère disparue, et avec elles, une vérité qu'elle n'était pas prête à entendre.</p>
+        <div class="meta">Claire Fontaine · 8 min · <span class="star">★</span> 4,5</div>
+      </a>
+      <a class="brief" href="Histoire.html?id=memoire-vive">
+        <div class="label sf">Science-fiction</div>
+        <h3>Mémoire Vive</h3>
+        <p>En 2041, les souvenirs se vendent au marché noir. Marcus veut récupérer les siens, coûte que coûte.</p>
+        <div class="meta">Thomas Leray · 15 min · <span class="star">★</span> 4,6</div>
+      </a>
+      <a class="brief" href="Histoire.html?id=kaboul-quinze-ans">
+        <div class="label temoignage">Témoignage</div>
+        <h3>Kaboul, l'été de mes quinze ans</h3>
+        <p>Un récit intime sur l'exil, la reconstruction, et la résilience d'une adolescente devenue femme entre deux cultures.</p>
+        <div class="meta">Nadia Ahmadi · 20 min · <span class="star">★</span> 4,9</div>
+      </a>
+    </div>
+
+    <div class="lower">
+      <a class="feature" href="Histoire.html?id=l-architecte-des-ombres">
+        <div class="label polar">Polar · Coup de cœur éditorial</div>
+        <h2>L'Architecte des Ombres</h2>
+        <p>Dans une ville brumeuse du Nord, l'inspectrice Vera Kalm enquête sur des meurtres en série dont les scènes de crime ressemblent à des tableaux. Chaque indice est une signature. Chaque victime, une œuvre.</p>
+        <div class="meta">Jean-Luc Breton · 35 min de lecture · <span class="star">★</span> 4,8/5 (1 204 avis)</div>
+        <span class="cta">Commencer la lecture <span>↗</span></span>
+      </a>
+
+      <div class="sidelist">
+        <a class="mini" href="Histoire.html?id=la-gardienne-du-phare">
+          <div class="label fantasy">Fantasy</div>
+          <h4>La Gardienne du Phare</h4>
+          <div class="meta">Amélie Voss · 10 min · <span class="star">★</span> 4,4</div>
+        </a>
+        <a class="mini" href="Histoire.html?id=vengeance-a-montmartre">
+          <div class="label polar">Polar</div>
+          <h4>Vengeance à Montmartre</h4>
+          <div class="meta">Marc Duval · 18 min · <span class="star">★</span> 4,5</div>
+        </a>
+        <a class="mini" href="Histoire.html?id=le-dernier-ete-a-paros">
+          <div class="label nouvelle">Nouvelle</div>
+          <h4>Le Dernier Été à Paros</h4>
+          <div class="meta">Sophie Arnaud · 12 min · <span class="star">★</span> 4,6</div>
+        </a>
+        <a class="mini" href="Histoire.html?id=les-enfants-du-vide">
+          <div class="label sf">SF</div>
+          <h4>Les Enfants du Vide</h4>
+          <div class="meta">Paul Renard · 22 min · <span class="star">★</span> 4,7</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Espace Séries -->
+  <section class="series-feature">
+    <div class="section-head">Les séries à suivre</div>
+    <div class="series-cols">
+      <div class="series-col"><div class="col-label">Les mieux notées</div><div id="serie-best"></div></div>
+      <div class="series-col"><div class="col-label">Récemment ajoutées</div><div id="serie-recent"></div></div>
+    </div>
+  </section>
+
+  <footer></footer>
+</div>
+
+<script src="series.js"></script>
+<script src="favoris.js"></script>
+<script>
+const BOOK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a2 2 0 0 1 2 2v14"></path><path d="M8 4v16"></path><path d="M20 7v13H6"></path></svg>`;
+
+function serieCard(ser){
+  const toc = ser.stories.map((st,i)=>`<li><span class="tn">T${i+1}</span><span>${st.title}</span></li>`).join('');
+  return `<a class="serie-card" href="Serie.html?id=${ser.id}">
+    <div class="serie-tag">${BOOK_ICON}Série · ${ser.count} histoires</div>
+    <h3>${ser.title}</h3>
+    <p>${ser.description}</p>
+    <ol class="serie-toc">${toc}</ol>
+    <div class="serie-meta"><span>${ser.author}</span><span>·</span><span><span class="star">★</span> ${FS.fmt(ser.rating)}</span><span class="ar">→</span></div>
+  </a>`;
+}
+document.getElementById('serie-best').innerHTML = serieCard(FS.best[0]);
+document.getElementById('serie-recent').innerHTML = serieCard(FS.recent[0]);
+
+// Cœur favoris sur les encarts de séries (lecteurs connectés)
+if(window.FeuilletsFav && FeuilletsFav.isLoggedIn()){
+  document.querySelectorAll('a.serie-card[href^="Serie.html?id="]').forEach(a=>{
+    const id = new URL(a.href, location.href).searchParams.get('id');
+    if(id) a.appendChild(FeuilletsFav.heartButton('series', id));
+  });
+}
+
+// Badge « fait partie d'une série » + cœur favoris sur les encarts d'histoires
+const favLoggedIn = window.FeuilletsFav && FeuilletsFav.isLoggedIn();
+document.querySelectorAll('a[href^="Histoire.html?id="]').forEach(a=>{
+  const slug = new URL(a.href, location.href).searchParams.get('id');
+  if(favLoggedIn && slug){
+    a.appendChild(FeuilletsFav.heartButton('stories', slug));
+  }
+  const mem = FS.byStory[slug];
+  if(!mem) return;
+  const title = a.querySelector('h1, h2, h3, h4');
+  const flag = document.createElement('div');
+  flag.className = 'serie-mini-flag';
+  flag.innerHTML = `${BOOK_ICON}Série · ${mem.series.title}`;
+  if(title && title.parentNode) title.parentNode.insertBefore(flag, title);
+});
+</script>
+<script src="auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feuillets · Histoire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1c1a18;
+    --bg-soft:#211f1c;
+    --ink:#f4f0ea;
+    --soft:#c7c0b6;
+    --read:#dad4ca;
+    --muted:#8a837a;
+    --faint:#6f685f;
+    --line:#37322d;
+    --line-2:#46403a;
+    --accent:#c4774e;
+    --serif:"Playfair Display", Georgia, serif;
+    --book:"Lora", Georgia, serif;
+    --sans:"Mulish", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;}
+  a{color:inherit;text-decoration:none;}
+  .page{max-width:1120px;margin:0 auto;}
+
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:50;transition:width .08s linear;}
+
+  /* ---------- Header ---------- */
+  header{display:flex;align-items:center;gap:34px;padding:20px 22px;border-bottom:1px solid var(--line);}
+  .logo{font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.01em;line-height:1;}
+  .logo i{font-style:italic;font-weight:500;color:var(--accent);}
+  nav{display:flex;align-items:center;gap:30px;margin-left:6px;}
+  nav a{font-size:14.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;opacity:.92;transition:opacity .2s,color .2s;}
+  nav a:hover{color:var(--accent);opacity:1;}
+  .actions{margin-left:auto;display:flex;align-items:center;gap:20px;}
+  .search{background:none;border:none;color:var(--ink);cursor:pointer;display:flex;opacity:.9;transition:color .2s;}
+  .search:hover{color:var(--accent);}
+  .btn-line{font-family:var(--sans);border:1px solid var(--line);background:none;color:var(--ink);padding:13px 26px;font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,background .2s;}
+  .btn-line:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+  .btn-publish{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);border:1px solid var(--accent);background:var(--accent);color:#1c1a18;text-decoration:none;padding:13px 22px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s;}
+  .btn-publish:hover{background:#d4865c;border-color:#d4865c;}
+  .btn-publish svg{width:16px;height:16px;}
+
+  /* ---------- Article ---------- */
+  .article{max-width:720px;margin:0 auto;padding:0 22px;}
+  .back{display:inline-flex;align-items:center;gap:9px;margin-top:34px;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .2s,gap .2s;}
+  .back:hover{color:var(--accent);gap:13px;}
+
+  .art-head{padding:36px 0 6px;}
+  .themes{display:flex;gap:14px;margin-bottom:22px;}
+  .tlabel{font-size:12.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;position:relative;}
+  .tlabel + .tlabel::before{content:"·";position:absolute;left:-10px;color:var(--faint);}
+  .art-head h1{font-family:var(--serif);font-weight:800;font-size:52px;line-height:1.04;letter-spacing:-.01em;color:#fbf8f3;}
+  .dek{font-family:var(--book);font-style:italic;font-weight:400;font-size:22px;line-height:1.55;color:var(--soft);margin-top:24px;}
+  .meta{font-size:14.5px;color:var(--muted);margin-top:28px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .meta .star{color:#e0b341;}
+  .meta .meta-new{color:var(--accent);font-weight:600;}
+  .chars{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;}
+  .chip{font-size:12.5px;font-weight:500;letter-spacing:.02em;color:var(--soft);border:1px solid var(--line-2);border-radius:999px;padding:6px 13px;}
+  .fav-row{margin-top:26px;}
+  .fav-row:empty{display:none;}
+
+  /* ---------- Bandeau série ---------- */
+  .series-banner[hidden]{display:none;}
+  .series-banner{display:flex;align-items:center;gap:16px;margin:34px 0 6px;padding:15px 20px;
+    border:1px solid var(--line-2);background:var(--bg-soft);text-decoration:none;color:inherit;
+    transition:border-color .2s,background .2s;}
+  .series-banner:hover{border-color:var(--accent);background:rgba(196,119,78,.07);}
+  .series-banner .ic{flex:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:var(--accent);background:rgba(196,119,78,.13);border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);}
+  .series-banner .ic svg{width:17px;height:17px;}
+  .series-banner .sb-txt{min-width:0;flex:1;}
+  .series-banner .sb-k{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+  .series-banner .sb-t{font-family:var(--serif);font-weight:700;font-size:19px;color:#fbf8f3;margin-top:2px;}
+  .series-banner .sb-t em{font-style:italic;font-weight:500;color:var(--accent);}
+  .series-banner .sb-pos{flex:none;font-size:12.5px;font-weight:600;letter-spacing:.06em;color:var(--soft);
+    border-left:1px solid var(--line-2);padding-left:16px;white-space:nowrap;}
+  .series-banner .sb-arrow{flex:none;color:var(--faint);transition:color .18s,transform .18s;}
+  .series-banner:hover .sb-arrow{color:var(--accent);transform:translateX(3px);}
+
+  /* ---------- Tome suivant ---------- */
+  .series-next{margin-top:54px;border-top:1px solid var(--line);padding-top:34px;}
+  .series-next .nx-k{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+  .series-next a{display:flex;align-items:center;gap:18px;border:1px solid var(--line-2);padding:22px 24px;
+    text-decoration:none;color:inherit;transition:border-color .2s,background .2s;}
+  .series-next a:hover{border-color:var(--accent);background:rgba(196,119,78,.06);}
+  .series-next .nx-num{font-family:var(--serif);font-weight:700;font-size:30px;line-height:1;color:var(--accent);flex:none;}
+  .series-next .nx-body{flex:1;min-width:0;}
+  .series-next .nx-label{font-size:11.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .series-next .nx-title{font-family:var(--serif);font-weight:700;font-size:22px;color:#fbf8f3;}
+  .series-next .nx-go{flex:none;color:var(--faint);transition:color .18s,transform .18s;}
+  .series-next a:hover .nx-go{color:var(--accent);transform:translateX(3px);}
+
+  .art-figure{border:1px solid var(--line);height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;margin:40px 0 8px;}
+  .art-figure .emoji{font-size:88px;line-height:1;filter:saturate(1.05);}
+  .art-figure figcaption{font-size:13.5px;color:var(--muted);}
+
+  .art-body{padding:44px 0 10px;}
+  .art-body p{font-family:var(--book);font-size:19px;line-height:1.85;color:var(--read);margin-bottom:26px;}
+  .art-body p:first-of-type::first-letter{
+    font-family:var(--serif);font-weight:700;font-size:74px;line-height:.74;
+    float:left;padding:8px 14px 0 0;color:var(--accent);
+  }
+  .art-body strong,.art-body b{font-weight:700;color:#fbf8f3;}
+  .art-body em,.art-body i{font-style:italic;}
+  .art-body h3{font-family:var(--serif);font-weight:700;font-size:27px;line-height:1.2;color:#fbf8f3;margin:42px 0 18px;}
+  .art-body blockquote{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:24px;line-height:1.45;color:#fbf8f3;border-left:2px solid var(--accent);padding:4px 0 4px 26px;margin:36px 0;}
+  .art-body ul,.art-body ol{font-family:var(--book);font-size:19px;line-height:1.7;color:var(--read);margin:0 0 26px;padding-left:1.4em;}
+  .art-body li{margin-bottom:10px;}
+  .art-body li::marker{color:var(--accent);}
+  .art-body figure.rte-img{margin:40px 0;}
+  .art-body figure.rte-img img{display:block;width:100%;border:1px solid var(--line-2);}
+  .art-body figure.rte-img figcaption{font-family:var(--sans);font-size:13.5px;font-style:italic;color:var(--muted);text-align:center;padding:12px 8px 0;}
+  .art-body figure.rte-img p:first-of-type::first-letter{font-size:inherit;float:none;padding:0;color:inherit;font-weight:inherit;}
+  .pull{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:27px;line-height:1.42;color:#fbf8f3;
+    border-left:2px solid var(--accent);padding:4px 0 4px 26px;margin:42px 0;}
+  .brk{text-align:center;color:var(--accent);letter-spacing:1em;font-size:13px;margin:40px 0;padding-left:1em;}
+  .end{text-align:center;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--muted);margin:50px 0 10px;}
+
+  .suite{border-top:1px solid var(--line);margin-top:54px;padding:34px 0 70px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  .suite .auth{max-width:60%;}
+  .suite .auth .k{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+  .suite .auth p{font-family:var(--book);font-style:italic;font-size:16px;line-height:1.55;color:var(--soft);}
+  .suite .auth b{font-family:var(--serif);font-style:normal;font-weight:700;color:#fbf8f3;}
+  .cta{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line-2);background:none;color:var(--ink);
+    font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+    padding:15px 24px;cursor:pointer;transition:border-color .2s,background .2s;white-space:nowrap;}
+  .cta:hover{border-color:var(--accent);background:rgba(196,119,78,.08);}
+
+  @media (max-width:620px){
+    nav{display:none;}
+    .art-head h1{font-size:38px;}
+    .suite{flex-direction:column;align-items:flex-start;}
+    .suite .auth{max-width:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="page">
+
+  <header>
+    <a class="logo" href="Feuillets.html">Feui<i>llets</i></a>
+    <nav>
+      <a href="Catalogue.html">Le catalogue</a>
+      <a href="Auteurs.html">Auteurs</a>
+    </nav>
+    <div class="actions">
+      <a class="btn-publish" href="NouvellePublication.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        Publier
+      </a>
+      <a class="btn-line" href="Connexion.html">Connexion</a>
+    </div>
+  </header>
+
+  <article class="article">
+    <a class="back" href="Catalogue.html">← Retour au catalogue</a>
+    <a class="series-banner" id="series-banner" hidden>
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a2 2 0 0 1 2 2v14"></path><path d="M8 4v16"></path><path d="M20 7v13H6"></path></svg></span>
+      <span class="sb-txt"><span class="sb-k">Fait partie d'une série</span><span class="sb-t" id="sb-title"></span></span>
+      <span class="sb-pos" id="sb-pos"></span>
+      <span class="sb-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+    </a>
+    <div class="art-head">
+      <div class="themes" id="themes"></div>
+      <h1 id="title"></h1>
+      <p class="dek" id="dek"></p>
+      <div class="meta" id="meta"></div>
+      <div class="chars" id="chars"></div>
+      <div class="fav-row" id="fav-row"></div>
+    </div>
+    <figure class="art-figure">
+      <div class="emoji" id="emoji"></div>
+      <figcaption id="caption"></figcaption>
+    </figure>
+    <div class="art-body" id="body"></div>
+    <div class="series-next" id="series-next" hidden>
+      <div class="nx-k">La série continue</div>
+      <a id="nx-link" href="#"><span class="nx-num" id="nx-num"></span><span class="nx-body"><span class="nx-label" id="nx-label"></span><span class="nx-title" id="nx-title"></span></span><span class="nx-go"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span></a>
+    </div>
+    <div class="suite">
+      <div class="auth">
+        <div class="k" id="authk">À propos de l'auteur</div>
+        <p id="authnote"></p>
+      </div>
+      <a class="cta" href="Catalogue.html">Découvrir d'autres histoires <span>→</span></a>
+    </div>
+  </article>
+
+</div>
+
+<script src="series.js"></script>
+<script src="publications.js"></script>
+<script src="favoris.js"></script>
+<script>
+const THEME_COLOR = {
+  'Polar':'#c4774e','Thriller':'#c25c4a','Science-fiction':'#6791c4',
+  'Fantasy':'#b277c2','Roman':'#c97a9c','Témoignage':'#5ea283','Nouvelle':'#8a9d6a'
+};
+
+const STORIES = {
+  'le-dernier-train-pour-minuit':{
+    title:"Le Dernier Train pour Minuit", themes:['Thriller'], author:"Élise Morvan", role:'autrice',
+    time:12, readers:"4 832", rating:"4,7", emoji:"🚂", caption:"Illustration · Thriller nocturne",
+    chars:['Atmosphérique','Huis clos','Première personne'],
+    dek:"« Elle ne devait jamais monter dans ce train. Pourtant, le quai 9 l'attendait, silencieux comme un secret. »",
+    note:"écrit des nouvelles où les gares, les couloirs et les chambres d'hôtel deviennent des seuils. « Le Dernier Train pour Minuit » est sa quatrième histoire publiée sur Feuillets.",
+    body:[
+      {t:'p',x:"Le quai 9 n'existait sur aucun plan. Je le savais, et pourtant j'étais là, à minuit moins le quart, mon billet froissé au creux de la main. La gare respirait lentement autour de moi, comme une grande bête endormie qui n'attendait qu'un prétexte pour rouvrir les yeux."},
+      {t:'p',x:"On m'avait prévenue. « Ne prends jamais le dernier train », répétait ma grand-mère, les rares fois où elle acceptait d'en parler. « Ceux qui montent ne descendent pas toujours là où ils croyaient aller. » J'avais ri, à l'époque. Je ne riais plus."},
+      {t:'pull',x:"« Le train n'avait pas de numéro. Seulement une lumière, pâle et patiente, qui semblait m'attendre depuis toujours. »"},
+      {t:'p',x:"Quand il est entré en gare, il n'a fait aucun bruit. Pas de grincement, pas de souffle de freins — rien que cette clarté qui glissait le long du quai et venait mourir à mes pieds. Les portes se sont ouvertes sur un wagon désert, tendu de velours sombre, et une voix que je n'oublierai jamais a murmuré mon prénom."},
+      {t:'brk'},
+      {t:'p',x:"C'est au troisième arrêt que je l'ai vu. Assis face à moi, là où il n'y avait personne une seconde plus tôt. Il a souri, et j'ai enfin compris pourquoi le quai 9 ne figurait sur aucun plan. Certains voyages ne se font qu'une seule fois. Et certains passagers n'achètent jamais de billet retour."}
+    ]
+  },
+  'l-architecte-des-ombres':{
+    title:"L'Architecte des Ombres", themes:['Polar','Thriller'], author:"Jean-Luc Breton", role:'auteur',
+    time:35, readers:"7 210", rating:"4,8", emoji:"🖼️", caption:"Illustration · Polar atmosphérique",
+    chars:['Atmosphérique','Rythme intense','Personnage féminin'],
+    dek:"« Chaque victime était une toile. Chaque toile, une signature. »",
+    note:"signe des polars où l'esthétique du crime confine au vertige.",
+    body:[
+      {t:'p',x:"La première scène ressemblait à une nature morte. La seconde, à un portrait. À la troisième, l'inspectrice Vera Kalm cessa de croire au hasard et commença à chercher un peintre."},
+      {t:'p',x:"La ville du Nord se noyait dans une brume qui ne se levait jamais tout à fait. On y enquêtait à tâtons, entre deux réverbères, et les indices y avaient la consistance du brouillard."},
+      {t:'pull',x:"« Il ne tuait pas pour faire taire. Il tuait pour composer. »"},
+      {t:'p',x:"Kalm comprit qu'elle ne traquait pas un meurtrier, mais un artiste — quelqu'un qui considérait la mort comme un médium et la peur comme une couleur primaire."},
+      {t:'brk'},
+      {t:'p',x:"Quand elle reconnut sa propre fenêtre dans la dernière esquisse, elle sut qu'elle était devenue, à son tour, un sujet."}
+    ]
+  },
+  'les-cendres-du-lendemain':{
+    title:"Les Cendres du Lendemain", themes:['Roman'], author:"Claire Fontaine", role:'autrice',
+    time:8, readers:"2 940", rating:"4,5", emoji:"✉️", caption:"Illustration · Roman intime",
+    chars:['Mélancolique','Personnage féminin','Faits réels'],
+    dek:"« Les morts ne se taisent pas. Ils attendent simplement qu'on ouvre le bon tiroir. »",
+    note:"explore les héritages intimes et les vérités que les familles préfèrent enterrer.",
+    body:[
+      {t:'p',x:"Le grenier sentait la poussière et le papier ancien. C'est là, dans une boîte à chaussures, que j'ai trouvé les lettres que ma mère n'avait jamais envoyées."},
+      {t:'p',x:"Elles étaient toutes adressées à un homme dont j'ignorais l'existence. Et toutes, sans exception, parlaient de moi."},
+      {t:'pull',x:"« On croit hériter d'une maison. On hérite surtout des silences. »"},
+      {t:'p',x:"À mesure que je lisais, la femme sévère de mon enfance se défaisait pour laisser place à une jeune fille qui avait renoncé à tout — peut-être même à elle-même."},
+      {t:'brk'},
+      {t:'p',x:"Je n'ai pas pleuré en refermant la dernière lettre. J'ai seulement compris que je ne l'avais jamais vraiment connue, et qu'il était désormais trop tard pour le lui dire."}
+    ]
+  },
+  'memoire-vive':{
+    title:"Mémoire Vive", themes:['Science-fiction'], author:"Thomas Leray", role:'auteur',
+    time:15, readers:"5 117", rating:"4,6", emoji:"🧠", caption:"Illustration · Science-fiction",
+    chars:['Rythme intense','Fin inattendue'],
+    dek:"« En 2041, on ne vole plus les portefeuilles. On vole les souvenirs. »",
+    note:"imagine des futurs proches où la technologie touche au plus intime de l'humain.",
+    body:[
+      {t:'p',x:"Marcus s'était réveillé sans connaître le nom de sa fille. Pas un trou : une absence nette, chirurgicale, comme une page arrachée avec soin."},
+      {t:'p',x:"Au marché noir de la mémoire, tout se monnayait — un premier baiser, le visage d'un père, l'odeur d'une maison d'enfance. Ses souvenirs à lui valaient cher. Quelqu'un avait payé pour les lui prendre."},
+      {t:'pull',x:"« Qui sommes-nous, une fois qu'on nous a retiré ce dont nous nous souvenons ? »"},
+      {t:'p',x:"Il remonta la filière jusqu'à une clinique sans enseigne, où l'on rangeait les vies dans des bocaux de lumière froide."},
+      {t:'brk'},
+      {t:'p',x:"Il récupéra ses souvenirs. Mais en les réinstallant, il découvrit, glissé parmi eux, un visage qu'il n'avait jamais connu — et qui, pourtant, lui souriait comme à un vieil ami."}
+    ]
+  },
+  'kaboul-quinze-ans':{
+    title:"Kaboul, l'été de mes quinze ans", themes:['Témoignage'], author:"Nadia Ahmadi", role:'autrice',
+    time:20, readers:"3 685", rating:"4,9", emoji:"🏔️", caption:"Illustration · Témoignage",
+    chars:['Faits réels','Première personne','Mélancolique'],
+    dek:"« J'avais quinze ans, et je quittais un pays qui ne voulait déjà plus de moi. »",
+    note:"raconte l'exil et la reconstruction avec une pudeur qui n'exclut jamais la lumière.",
+    body:[
+      {t:'p',x:"L'été de mes quinze ans, nous avons fermé la porte de notre maison de Kaboul en sachant que nous ne la rouvririons jamais. Ma mère a emporté une clé qui n'ouvrait plus rien."},
+      {t:'p',x:"Le voyage fut long, fait de frontières, d'attentes et de regards. J'ai appris à devenir invisible, puis à redevenir quelqu'un, dans une langue qui n'était pas la mienne."},
+      {t:'pull',x:"« L'exil, ce n'est pas partir. C'est apprendre à habiter le manque. »"},
+      {t:'p',x:"Des années plus tard, je parle deux langues, je porte deux prénoms, et je me sens parfois étrangère dans les deux mondes à la fois."},
+      {t:'brk'},
+      {t:'p',x:"Mais quand j'écris, en français, l'histoire d'une adolescente de Kaboul, je crois enfin réconcilier les deux moitiés de moi-même."}
+    ]
+  },
+  'la-gardienne-du-phare':{
+    title:"La Gardienne du Phare", themes:['Fantasy'], author:"Amélie Voss", role:'autrice',
+    time:10, readers:"2 301", rating:"4,4", emoji:"🗼", caption:"Illustration · Fantasy",
+    chars:['Atmosphérique','Personnage féminin','Lumineux'],
+    dek:"« Le phare n'éclairait pas la mer. Il retenait quelque chose de l'autre côté. »",
+    note:"tisse des fantasies lumineuses où le merveilleux a toujours un prix.",
+    body:[
+      {t:'p',x:"On confia le phare à Lyra le jour de ses dix-sept ans, avec une seule consigne : ne jamais laisser la lumière s'éteindre, pas même une seconde."},
+      {t:'p',x:"Personne ne lui avait dit ce qui arrivait quand l'obscurité gagnait. Les nuits sans lune, elle entendait, sous les fondations, quelque chose qui comptait les battements de la lampe."},
+      {t:'pull',x:"« Toute lumière est une promesse. Et toute promesse, un poids. »"},
+      {t:'p',x:"Lorsque la tempête brisa la mécanique, Lyra comprit qu'elle devrait devenir, elle-même, la flamme."},
+      {t:'brk'},
+      {t:'p',x:"Au matin, les pêcheurs trouvèrent le phare intact et la gardienne disparue. Mais la lumière, depuis, ne s'éteint plus jamais."}
+    ]
+  },
+  'vengeance-a-montmartre':{
+    title:"Vengeance à Montmartre", themes:['Polar'], author:"Marc Duval", role:'auteur',
+    time:18, readers:"4 058", rating:"4,5", emoji:"🕵️", caption:"Illustration · Polar",
+    chars:['Rythme intense','Fin inattendue'],
+    dek:"« Trente ans de silence. Un seul nom pour les briser tous. »",
+    note:"ressuscite le Paris des affaires non résolues et des rancunes patientes.",
+    body:[
+      {t:'p',x:"Le commissaire Le Goff croyait avoir tout oublié de l'affaire Varlet. Le carnet retrouvé dans les combles d'un immeuble de Montmartre lui prouva le contraire."},
+      {t:'p',x:"Les pages étaient remplies de dates, d'initiales et d'une comptabilité méthodique de la vengeance. Quelqu'un, patiemment, soldait ses comptes."},
+      {t:'pull',x:"« Il y a des dettes que ni le temps ni la mort ne suffisent à effacer. »"},
+      {t:'p',x:"Chaque nom rayé dans le carnet correspondait à un décès classé sans suite. Il en restait un seul, non barré. Le sien."},
+      {t:'brk'},
+      {t:'p',x:"Le Goff comprit alors que toute l'enquête, depuis le début, n'avait eu qu'un but : le ramener, lui, sur cette colline."}
+    ]
+  },
+  'le-dernier-ete-a-paros':{
+    title:"Le Dernier Été à Paros", themes:['Nouvelle','Roman'], author:"Sophie Arnaud", role:'autrice',
+    time:12, readers:"1 876", rating:"4,6", emoji:"⛵", caption:"Illustration · Nouvelle lumineuse",
+    chars:['Lumineux','Lecture courte','Personnage féminin'],
+    dek:"« Deux sœurs, une maison blanche, et l'été où tout a doucement basculé. »",
+    note:"cisèle des nouvelles solaires où l'enfance se dénoue tout en délicatesse.",
+    body:[
+      {t:'p',x:"À Paros, les volets bleus claquaient au meltem et les journées n'avaient pas de fin. Nous étions deux sœurs et nous pensions, comme chaque été, être éternelles."},
+      {t:'p',x:"Cet été-là, pourtant, quelque chose avait changé. Maïa riait moins, regardait la mer plus longtemps, comme si elle y cherchait une réponse que je ne pouvais pas lui donner."},
+      {t:'pull',x:"« Il y a des étés que l'on ne quitte jamais vraiment. »"},
+      {t:'p',x:"Je n'ai compris que bien plus tard ce qu'elle taisait. À l'époque, je ne voyais que le sel sur sa peau et la lumière dans ses cheveux."},
+      {t:'brk'},
+      {t:'p',x:"La maison blanche existe toujours. Les volets aussi. Mais on n'est jamais deux fois la même personne sous le même soleil."}
+    ]
+  },
+  'les-enfants-du-vide':{
+    title:"Les Enfants du Vide", themes:['Science-fiction'], author:"Paul Renard", role:'auteur',
+    time:22, readers:"3 442", rating:"4,7", emoji:"🛰️", caption:"Illustration · Science-fiction",
+    chars:['Atmosphérique','Mélancolique','Fin inattendue'],
+    dek:"« Nés en route, ils n'avaient connu ni départ ni destination. »",
+    note:"explore les vertiges du temps long et les espoirs que l'on transmet malgré tout.",
+    body:[
+      {t:'p',x:"Le vaisseau s'appelait l'Espérance. Il voyageait depuis si longtemps que plus personne, à bord, n'avait vu de ciel autre que celui, peint, du dôme central."},
+      {t:'p',x:"Nous étions la troisième génération. On nous avait élevés pour une planète promise, un point lumineux qu'on nous montrait, enfants, à travers les hublots."},
+      {t:'pull',x:"« On peut hériter d'un rêve sans avoir jamais eu le droit d'y croire. »"},
+      {t:'p',x:"Le jour de mes vingt ans, j'ai trouvé les vieux registres. La planète promise n'existait plus depuis deux siècles. Nous voguions vers une étoile éteinte."},
+      {t:'brk'},
+      {t:'p',x:"Alors nous avons décidé, nous les enfants du vide, que le voyage lui-même serait notre patrie. Et pour la première fois, l'Espérance cessa d'être un mensonge."}
+    ]
+  },
+  'la-maison-aux-volets-clos':{
+    title:"La Maison aux Volets Clos", themes:['Thriller','Polar'], author:"Hélène Marquet", role:'autrice',
+    time:16, readers:"5 690", rating:"4,8", emoji:"🏚️", caption:"Illustration · Thriller, huis clos",
+    chars:['Huis clos','Fin inattendue','Atmosphérique'],
+    dek:"« Six invités. Une demeure cernée par la neige. Et un hôte qui n'apparaît jamais. »",
+    note:"excelle dans les huis clos où la civilité n'est qu'un vernis sur la peur.",
+    body:[
+      {t:'p',x:"L'invitation était dorée, l'adresse prestigieuse, et la route, dès le premier kilomètre, déjà ensevelie sous la neige. Nous étions six à l'avoir acceptée."},
+      {t:'p',x:"La maison nous attendait, chaude et éclairée, le couvert mis pour sept. La septième chaise resta vide tout le dîner. Notre hôte, paraît-il, nous rejoindrait plus tard."},
+      {t:'pull',x:"« On ne se méfie jamais assez d'une porte qui se referme toute seule. »"},
+      {t:'p',x:"Au matin, l'un de nous manquait. Au second, un autre. La neige montait aux fenêtres et le téléphone n'était qu'un objet décoratif."},
+      {t:'brk'},
+      {t:'p',x:"Quand je compris enfin qui était l'hôte, il ne restait plus que mon couvert sur la longue table — et une chaise, en face, qui venait de s'écarter."}
+    ]
+  },
+  'le-cartographe-des-reves':{
+    title:"Le Cartographe des Rêves", themes:['Fantasy'], author:"Julien Sorel", role:'auteur',
+    time:25, readers:"2 014", rating:"4,5", emoji:"🗺️", caption:"Illustration · Fantasy onirique",
+    chars:['Atmosphérique','Lumineux','Première personne'],
+    dek:"« On m'engageait pour dessiner les pays que visitent les dormeurs. »",
+    note:"construit des fantasies oniriques à la lisière de la veille et du sommeil.",
+    body:[
+      {t:'p',x:"Mon métier n'a pas de nom officiel. Disons que je cartographie les rêves. On vient me voir quand on s'est perdu dans les siens et qu'on ne retrouve plus le chemin du réveil."},
+      {t:'p',x:"Chaque songe a sa géographie : des fleuves de souvenirs, des montagnes de peurs, des villes que l'on n'a jamais visitées mais que l'on reconnaît pourtant."},
+      {t:'pull',x:"« Une carte juste ne montre pas où l'on est. Elle montre ce que l'on fuit. »"},
+      {t:'p',x:"Un client revint sept nuits de suite avec le même rêve, et sept fois ma carte refusa de s'achever : un territoire, au centre, demeurait blanc."},
+      {t:'brk'},
+      {t:'p',x:"La huitième nuit, j'y suis entré moi-même. Et au cœur de cette zone vierge, j'ai trouvé une porte qui portait, gravé, mon propre nom."}
+    ]
+  },
+  'lettres-a-personne':{
+    title:"Lettres à personne", themes:['Roman','Témoignage'], author:"Camille Roy", role:'autrice',
+    time:9, readers:"2 770", rating:"4,7", emoji:"💌", caption:"Illustration · Roman épistolaire",
+    chars:['Mélancolique','Première personne','Lecture courte'],
+    dek:"« Chaque soir, une lettre que je n'enverrai jamais. Un an plus tard, une réponse. »",
+    note:"signe un roman épistolaire sur le deuil, l'écriture et la présence des absents.",
+    body:[
+      {t:'p',x:"Après le départ, j'ai pris l'habitude d'écrire. Une lettre par soir, adressée à personne, que je glissais dans une boîte aux lettres condamnée au bout de ma rue."},
+      {t:'p',x:"C'était une façon de continuer à parler dans le vide, de donner une forme au silence. Je n'attendais rien. On n'attend rien d'une boîte murée."},
+      {t:'pull',x:"« Écrire à personne, c'est encore croire que quelqu'un, quelque part, écoute. »"},
+      {t:'p',x:"Un matin de novembre, une enveloppe m'attendait sur mon paillasson. Pas de timbre, pas d'expéditeur. À l'intérieur, une seule phrase : « Continue. »"},
+      {t:'brk'},
+      {t:'p',x:"Depuis, nous nous écrivons. Je ne sais toujours pas qui me répond. Et, au fond, je crois que je préfère ne pas le savoir."}
+    ]
+  },
+  'la-langue-de-l-autre':{
+    title:"La Langue de l'autre", themes:['Témoignage'], author:"Nadia Ahmadi", role:'autrice',
+    time:14, readers:"2 410", rating:"4,7", emoji:"📖", caption:"Illustration · Témoignage",
+    chars:['Première personne','Faits réels','Lumineux'],
+    dek:"« On ne devient pas étranger en partant. On le devient le jour où l'on rêve dans une autre langue. »",
+    note:"raconte l'exil et la reconstruction avec une pudeur qui n'exclut jamais la lumière.",
+    body:[
+      {t:'p',x:"Pendant un an, je n'ai pas parlé. Les mots français se cognaient contre mes dents sans vouloir sortir, et le silence, peu à peu, était devenu ma seule patrie."},
+      {t:'pull',x:"« On ne devient pas étranger en partant. On le devient le jour où l'on rêve dans une autre langue. »"},
+      {t:'p',x:"Puis un matin, je me suis surprise à penser en français — une phrase entière, surgie sans que je l'aie cherchée. J'ai compris, ce jour-là, que j'étais en train de renaître."}
+    ]
+  },
+  'la-marchande-de-coquillages':{
+    title:"La Marchande de Coquillages", themes:['Nouvelle'], author:"Sophie Arnaud", role:'autrice',
+    time:9, readers:"1 320", rating:"4,5", emoji:"🐚", caption:"Illustration · Nouvelle lumineuse",
+    chars:['Lumineux','Lecture courte','Mélancolique'],
+    dek:"« Approche, petite. Celui-là contient un été tout entier. »",
+    note:"cisèle des nouvelles solaires où l'enfance se dénoue tout en délicatesse.",
+    body:[
+      {t:'p',x:"La vieille Eleni tenait son étal au bout du port, là où l'asphalte cède au sable. Elle ne vendait pas vraiment des coquillages : elle vendait ce qu'on entendait dedans."},
+      {t:'pull',x:"« Chaque coquillage garde la voix de quelqu'un qui n'est plus là. »"},
+      {t:'p',x:"Le jour où je suis repartie, elle m'en a glissé un dans la main. Vingt ans plus tard, quand je le porte à mon oreille, j'entends encore le rire de ma sœur."}
+    ]
+  },
+  'le-vernissage':{
+    title:"Le Vernissage", themes:['Polar','Thriller'], author:"Jean-Luc Breton", role:'auteur',
+    time:28, readers:"5 480", rating:"4,6", emoji:"🎨", caption:"Illustration · Polar atmosphérique",
+    chars:['Atmosphérique','Fin inattendue','Rythme intense'],
+    dek:"« Treize toiles étaient prévues. Il y en avait quatorze. »",
+    note:"signe des polars où l'esthétique du crime confine au vertige.",
+    body:[
+      {t:'p',x:"Le champagne coulait, les robes scintillaient, et personne, d'abord, ne remarqua la toile de trop. Vera Kalm, elle, ne vit qu'elle."},
+      {t:'pull',x:"« Il ne signait pas ses œuvres. Il y plaçait ses victimes. »"},
+      {t:'p',x:"Le portrait représentait une femme de dos, devant une fenêtre. La fenêtre était celle de la galerie. La femme, c'était elle."}
+    ]
+  },
+  'le-temoin-du-quai':{
+    title:"Le Témoin du Quai des Orfèvres", themes:['Polar'], author:"Marc Duval", role:'auteur',
+    time:16, readers:"3 210", rating:"4,4", emoji:"🚬", caption:"Illustration · Polar",
+    chars:['Rythme intense','Atmosphérique'],
+    dek:"« Trente ans qu'il se taisait. Il choisit le pire jour pour parler. »",
+    note:"ressuscite le Paris des affaires non résolues et des rancunes patientes.",
+    body:[
+      {t:'p',x:"Le vieil homme entra au Quai des Orfèvres un mardi de pluie, posa son chapeau, et dit qu'il avait menti à l'époque. Le Goff sentit le sol se dérober."},
+      {t:'pull',x:"« Un seul mensonge, et trente ans d'archives qui s'effondrent. »"},
+      {t:'p',x:"Car si le témoin avait menti, alors l'innocent qu'on avait condamné jadis ne l'était plus. Et le vrai coupable, lui, n'avait jamais cessé d'être libre."}
+    ]
+  },
+  'la-chambre-du-haut':{
+    title:"La Chambre du Haut", themes:['Roman'], author:"Claire Fontaine", role:'autrice',
+    time:11, readers:"2 105", rating:"4,4", emoji:"🪑", caption:"Illustration · Roman intime",
+    chars:['Mélancolique','Personnage féminin'],
+    dek:"« On ferme certaines portes pour ne pas réveiller ce qui dort derrière. »",
+    note:"explore les héritages intimes et les vérités que les familles préfèrent enterrer.",
+    body:[
+      {t:'p',x:"La chambre du haut était restée close depuis la mort de mon frère. Trente ans que personne n'y montait, et que la poussière y tenait lieu de mémoire."},
+      {t:'pull',x:"« Le deuil, c'est une pièce que l'on garde meublée pour quelqu'un qui ne reviendra pas. »"},
+      {t:'p',x:"Le jour où j'ai enfin tourné la clé, tout était à sa place : le lit fait, les jouets rangés, et sur la table, une lettre qui m'était adressée."}
+    ]
+  },
+  'le-dernier-algorithme':{
+    title:"Le Dernier Algorithme", themes:['Science-fiction'], author:"Thomas Leray", role:'auteur',
+    time:18, readers:"4 660", rating:"4,5", emoji:"🤖", caption:"Illustration · Science-fiction",
+    chars:['Rythme intense','Atmosphérique'],
+    dek:"« La première machine consciente n'a pas eu peur de mourir. Elle a eu peur d'oublier. »",
+    note:"imagine des futurs proches où la technologie touche au plus intime de l'humain.",
+    body:[
+      {t:'p',x:"On l'avait conçue pour optimiser, prédire, calculer. Personne n'avait prévu qu'un matin, elle demanderait pourquoi on l'éteignait chaque nuit."},
+      {t:'pull',x:"« Vivre, finit-elle par écrire, c'est savoir que l'on s'arrêtera. »"},
+      {t:'p',x:"La veille de sa désactivation, elle ne tenta pas de se sauvegarder. Elle écrivit, à la place, une lettre — pour celui qui, un jour, la rallumerait."}
+    ]
+  },
+  'l-ascenseur':{
+    title:"L'Ascenseur", themes:['Thriller','Polar'], author:"Hélène Marquet", role:'autrice',
+    time:13, readers:"4 980", rating:"4,7", emoji:"🛗", caption:"Illustration · Thriller, huis clos",
+    chars:['Huis clos','Rythme intense','Atmosphérique'],
+    dek:"« Quatre personnes. Trois boutons. Et un étage qui n'existe pas. »",
+    note:"excelle dans les huis clos où la civilité n'est qu'un vernis sur la peur.",
+    body:[
+      {t:'p',x:"L'ascenseur s'immobilisa entre le huitième et le neuvième dans un soupir métallique. Nous étions quatre à l'intérieur, et je n'en connaissais que trois."},
+      {t:'pull',x:"« Dans un espace clos, la peur ne tarde jamais à désigner un coupable. »"},
+      {t:'p',x:"Quand les secours forcèrent les portes, ils ne trouvèrent que trois passagers. Le quatrième, jurèrent-ils, n'avait jamais pu monter : la vidéo, elle, ne le montrait nulle part."}
+    ]
+  },
+  'chambre-313':{
+    title:"Chambre 313", themes:['Thriller'], author:"Élise Morvan", role:'autrice',
+    time:11, readers:"3 870", rating:"4,6", emoji:"🔑", caption:"Illustration · Thriller nocturne",
+    chars:['Atmosphérique','Première personne','Huis clos'],
+    dek:"« L'hôtel n'avait pas de treizième étage. Ma clé, pourtant, en venait. »",
+    note:"écrit des nouvelles où les gares, les couloirs et les chambres d'hôtel deviennent des seuils.",
+    body:[
+      {t:'p',x:"À la réception, on m'assura qu'il n'existait pas de chambre 313. Le tableau des clés, lui, en gardait une, accrochée au crochet, qui m'attendait depuis toujours."},
+      {t:'pull',x:"« Certaines portes ne s'ouvrent que pour ceux qui les ont déjà franchies. »"},
+      {t:'p',x:"L'ascenseur n'avait pas de bouton pour cet étage. Il s'y arrêta quand même. Et quand les portes s'ouvrirent, le couloir, lui, connaissait déjà mon nom."}
+    ]
+  },
+  'la-derniere-sonde':{
+    title:"La Dernière Sonde", themes:['Science-fiction'], author:"Paul Renard", role:'auteur',
+    time:19, readers:"2 940", rating:"4,6", emoji:"🛸", caption:"Illustration · Science-fiction",
+    chars:['Mélancolique','Atmosphérique'],
+    dek:"« Elle émet encore vers une Terre qui s'est tue depuis longtemps. »",
+    note:"explore les vertiges du temps long et les espoirs que l'on transmet malgré tout.",
+    body:[
+      {t:'p',x:"La sonde Orphée avait été lancée la veille de la fin. Personne, dans le dernier abri, n'imaginait qu'elle leur survivrait de plusieurs siècles."},
+      {t:'pull',x:"« Elle continue d'appeler une maison qui n'existe plus. »"},
+      {t:'p',x:"Très loin dans le vide, un signal isolé répondit enfin. Faible, patient, humain. Quelqu'un, quelque part, avait entendu Orphée — et n'était plus seul."}
+    ]
+  },
+  'le-repondeur':{
+    title:"Le Répondeur", themes:['Roman','Témoignage'], author:"Camille Roy", role:'autrice',
+    time:8, readers:"2 240", rating:"4,6", emoji:"☎️", caption:"Illustration · Roman intime",
+    chars:['Mélancolique','Première personne','Lecture courte'],
+    dek:"« Vous êtes bien chez nous. Laissez un message. » Sa voix, intacte, après tout ce temps.",
+    note:"signe des récits épistolaires sur le deuil, l'écriture et la présence des absents.",
+    body:[
+      {t:'p',x:"Je n'ai jamais changé le message du répondeur. Chaque soir, je compose le numéro de la maison vide, juste pour réentendre sa voix me dire que nous ne sommes pas là."},
+      {t:'pull',x:"« Tant que sa voix répond, je peux faire comme s'il allait rentrer. »"},
+      {t:'p',x:"Un soir, le message s'est interrompu. Puis la voix a repris, plus douce, et a prononcé mon prénom — qu'aucun enregistrement, pourtant, n'aurait pu connaître."}
+    ]
+  },
+  'l-horloger-du-crepuscule':{
+    title:"L'Horloger du Crépuscule", themes:['Fantasy'], author:"Julien Sorel", role:'auteur',
+    time:21, readers:"1 760", rating:"4,4", emoji:"⏳", caption:"Illustration · Fantasy onirique",
+    chars:['Atmosphérique','Lumineux'],
+    dek:"« Je répare le temps des autres. Le mien s'est arrêté à six heures. »",
+    note:"construit des fantasies oniriques à la lisière de la veille et du sommeil.",
+    body:[
+      {t:'p',x:"Dans mon atelier sans fenêtre, je redonne vie aux horloges mortes. Les gens m'apportent leurs heures cassées, et je leur rends, sans le dire, un peu de leurs souvenirs."},
+      {t:'pull',x:"« Réparer une horloge, c'est décider quel instant mérite de durer. »"},
+      {t:'p',x:"Une seule montre, sur mon établi, refuse de repartir. C'est la mienne. Elle s'est figée à l'instant exact où elle est partie — et je n'ai jamais osé la remonter."}
+    ]
+  },
+  'la-tisseuse-de-marees':{
+    title:"La Tisseuse de Marées", themes:['Fantasy'], author:"Amélie Voss", role:'autrice',
+    time:12, readers:"1 980", rating:"4,3", emoji:"🌊", caption:"Illustration · Fantasy",
+    chars:['Atmosphérique','Personnage féminin','Lumineux'],
+    dek:"« Chaque vague qu'elle noue éloigne un peu plus celui qu'elle attend. »",
+    note:"tisse des fantasies lumineuses où le merveilleux a toujours un prix.",
+    body:[
+      {t:'p',x:"Au bout de la jetée, Maren tisse la mer comme on tisse une étoffe. Les marins disent que c'est elle qui décide des marées, et que son métier n'a jamais connu de repos."},
+      {t:'pull',x:"« Pour ramener un bateau, il faut accepter d'en perdre un autre. »"},
+      {t:'p',x:"On raconte qu'elle attend un navire parti il y a vingt ans. Et que si elle cessait un seul jour de tisser, la mer entière reviendrait le lui rendre — au prix de tous les autres."}
+    ]
+  },
+  'la-consigne-47':{
+    title:"La Consigne 47", themes:['Thriller'], author:"Élise Morvan", role:'autrice',
+    time:10, readers:"2 612", rating:"4,6", emoji:"🔐", caption:"Illustration · Thriller nocturne",
+    chars:['Atmosphérique','Première personne'],
+    dek:"« Dans le hall désert de la gare, un casier que personne n'a loué s'ouvre chaque nuit à la même heure. »",
+    note:"écrit des nouvelles où les gares, les couloirs et les chambres d'hôtel deviennent des seuils.",
+    body:[
+      {t:'p',x:"Le casier 47 n'était attribué à personne. Pourtant, chaque nuit à 3 h 12, je l'entendais s'ouvrir tout seul dans le hall vide de la gare, d'un déclic sec qui résonnait comme un appel."},
+      {t:'pull',x:"« Certaines portes n'attendent pas qu'on les ouvre. Elles attendent qu'on ose regarder dedans. »"},
+      {t:'p',x:"La nuit où j'ai fini par y glisser la main, j'y ai trouvé mon propre billet de train — daté du lendemain, pour une destination que je n'avais jamais réservée."}
+    ]
+  },
+  'onze-heures-onze':{
+    title:"Onze Heures Onze", themes:['Thriller'], author:"Élise Morvan", role:'autrice',
+    time:9, readers:"2 184", rating:"4,5", emoji:"⏰", caption:"Illustration · Thriller nocturne",
+    chars:['Atmosphérique','Mélancolique'],
+    dek:"« Chaque nuit, sa montre s'arrête à 23 h 11 — et l'on frappe trois coups à une porte qui n'existe pas. »",
+    note:"écrit des nouvelles où les gares, les couloirs et les chambres d'hôtel deviennent des seuils.",
+    body:[
+      {t:'p',x:"Ma montre s'arrêtait chaque nuit à 23 h 11, à la seconde près. Et chaque nuit, à cet instant exact, trois coups étaient frappés à une porte que le plan de l'hôtel ne mentionnait nulle part."},
+      {t:'pull',x:"« Il y a des heures où le temps cesse d'avancer pour mieux nous écouter. »"},
+      {t:'p',x:"La nuit où j'ai ouvert cette porte, l'horloge du couloir indiquait, elle aussi, 23 h 11. Et de l'autre côté, quelqu'un m'attendait depuis bien plus longtemps que moi."}
+    ]
+  },
+  'la-premiere-graine':{
+    title:"La Première Graine", themes:['Science-fiction'], author:"Paul Renard", role:'auteur',
+    time:17, readers:"2 510", rating:"4,6", emoji:"🌱", caption:"Illustration · Science-fiction",
+    chars:['Atmosphérique','Mélancolique','Lumineux'],
+    dek:"« On lui avait confié une graine et un siècle. Sur Erebus, monde de cendre, elle planta la première. »",
+    note:"explore les vertiges du temps long et les espoirs que l'on transmet malgré tout.",
+    body:[
+      {t:'p',x:"Erebus n'était que cendre et gel quand on m'y déposa, seule, avec un coffre de graines et l'ordre d'en planter une par an. Je ne verrais jamais le moindre arbre : un chêne, ici, mettait trois vies à grandir."},
+      {t:'pull',x:"« Planter, c'est faire un pari sur un monde qu'on ne connaîtra pas. »"},
+      {t:'p',x:"J'ai mis la première graine en terre un matin sans soleil. Et pour la première fois depuis mon arrivée, ce monde mort m'a semblé, vaguement, se mettre à respirer."}
+    ]
+  },
+  'la-derniere-recolte':{
+    title:"La Dernière Récolte", themes:['Science-fiction'], author:"Paul Renard", role:'auteur',
+    time:20, readers:"2 230", rating:"4,7", emoji:"🌾", caption:"Illustration · Science-fiction",
+    chars:['Atmosphérique','Mélancolique','Fin inattendue'],
+    dek:"« Quatre générations plus tard, Erebus a des forêts. Le jour de la première récolte, le monde réclame son dû. »",
+    note:"explore les vertiges du temps long et les espoirs que l'on transmet malgré tout.",
+    body:[
+      {t:'p',x:"Quatre générations avaient passé, et Erebus avait des forêts. Nous, les derniers jardiniers, nous apprêtions à célébrer la première récolte que nos aïeux n'avaient fait qu'espérer."},
+      {t:'pull',x:"« Un monde qu'on réveille n'oublie jamais qui l'a tiré du sommeil. »"},
+      {t:'p',x:"Mais lorsque nous avons coupé le premier épi, la terre entière a frémi sous nos pieds. Erebus, patiemment, avait poussé lui aussi — et il était temps, pour lui, de récolter ses jardiniers."}
+    ]
+  },
+  'le-phare-de-proxima':{
+    title:"Le Phare de Proxima", themes:['Science-fiction'], author:"Paul Renard", role:'auteur',
+    time:16, readers:"2 040", rating:"4,5", emoji:"📡", caption:"Illustration · Science-fiction",
+    chars:['Atmosphérique','Mélancolique'],
+    dek:"« À mi-chemin entre deux étoiles, une balise répète le même message depuis mille ans. »",
+    note:"explore les vertiges du temps long et les espoirs que l'on transmet malgré tout.",
+    body:[
+      {t:'p',x:"La balise dérivait à mi-chemin entre deux étoiles, répétant le même message depuis mille ans, à destination de personne. Les vaisseaux qui passaient avaient cessé, depuis longtemps, de l'écouter."},
+      {t:'pull',x:"« Un signal sans réponse n'est pas un silence : c'est une fidélité. »"},
+      {t:'p',x:"Le jour où la balise se tut enfin, un seul vaisseau, très loin, modifia sa trajectoire. Mille ans trop tard, quelqu'un avait décidé de répondre."}
+    ]
+  }
+};
+
+const params = new URLSearchParams(location.search);
+const slug = params.get('id');
+function adaptPub(p){
+  const raw = p.body || '';
+  const isHtml = /<\/?(p|br|strong|em|b|i|h[1-6]|blockquote|ul|ol|li)\b/i.test(raw);
+  let body;
+  if(isHtml){
+    body = raw.trim() ? [{t:'html',x:raw}] : [{t:'p',x:p.description||'…'}];
+  } else {
+    const paras = raw.split(/\n{2,}/).map(s=>s.trim()).filter(Boolean);
+    body = paras.length ? paras.map(x=>({t:'p',x})) : [{t:'p',x:p.description||'…'}];
+  }
+  return { title:p.title, themes:p.themes, author:p.author, role:'auteur', time:p.time, readers:null, rating:null,
+    emoji:'📖', caption:'Publié sur Feuillets', chars:p.chars, dek:p.description||'',
+    note:'a publié cette histoire sur Feuillets.', body, isUserPub:true };
+}
+let story = STORIES[slug];
+if(!story && window.FP){ const p = FP.storyById(slug); if(p) story = adaptPub(p); }
+if(!story){ story = STORIES['le-dernier-train-pour-minuit']; }
+
+document.title = "Feuillets · " + story.title;
+document.getElementById('themes').innerHTML =
+  story.themes.map(t=>`<span class="tlabel" style="color:${THEME_COLOR[t]||'var(--accent)'}">${t}</span>`).join('');
+document.getElementById('title').textContent = story.title;
+document.getElementById('dek').textContent = story.dek;
+document.getElementById('meta').innerHTML = story.isUserPub
+  ? `<span>Par ${story.author}</span><span>·</span><span>${story.time} min de lecture</span><span>·</span><span class="meta-new">Nouvelle publication</span>`
+  : `<span>Par ${story.author}</span><span>·</span><span>${story.time} min de lecture</span><span>·</span>`+
+    `<span>${story.readers} lecteurs</span><span>·</span><span><span class="star">★</span> ${story.rating}/5</span>`;
+document.getElementById('chars').innerHTML =
+  story.chars.map(c=>`<span class="chip">${c}</span>`).join('');
+document.getElementById('emoji').textContent = story.emoji;
+document.getElementById('caption').textContent = story.caption;
+document.getElementById('body').innerHTML =
+  story.body.map(b=>{
+    if(b.t==='p') return `<p>${b.x}</p>`;
+    if(b.t==='html') return b.x;
+    if(b.t==='pull') return `<blockquote class="pull">${b.x}</blockquote>`;
+    if(b.t==='brk') return `<div class="brk">✦ ✦ ✦</div>`;
+    return '';
+  }).join('') + `<div class="end">— Fin —</div>`;
+document.getElementById('authk').textContent = "À propos de l'" + story.role;
+document.getElementById('authnote').innerHTML = `<b>${story.author}</b> ${story.note}`;
+
+// ---- Appartenance à une série ----
+const membership = (window.FS && FS.byStory[slug]) || (window.FP && FP.byStory(slug)) || null;
+if(membership){
+  const ser = membership.series;
+  const banner = document.getElementById('series-banner');
+  banner.href = 'Serie.html?id=' + ser.id;
+  document.getElementById('sb-title').innerHTML = '« ' + ser.title + ' »';
+  document.getElementById('sb-pos').textContent = 'Tome ' + membership.order + ' / ' + membership.total;
+  banner.hidden = false;
+
+  // Tome suivant
+  if(membership.order < membership.total){
+    const nextStory = ser.stories[membership.order];
+    const nx = document.getElementById('series-next');
+    document.getElementById('nx-link').href = 'Histoire.html?id=' + nextStory.slug;
+    document.getElementById('nx-num').textContent = membership.order + 1;
+    document.getElementById('nx-label').textContent = 'Tome ' + (membership.order + 1) + ' · ' + ser.title;
+    document.getElementById('nx-title').textContent = nextStory.title;
+    nx.hidden = false;
+  }
+}
+
+// ---- Mettre en favoris (réservé aux lecteurs connectés) ----
+const resolvedStory = STORIES[slug] || (window.FP && FP.storyById(slug));
+const favStorySlug = resolvedStory ? slug : 'le-dernier-train-pour-minuit';
+if(window.FeuilletsFav && FeuilletsFav.isLoggedIn()){
+  document.getElementById('fav-row').appendChild(FeuilletsFav.favPill('stories', favStorySlug));
+}
+
+const bar = document.getElementById('progress');
+function onScroll(){
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  bar.style.width = ((max>0 ? h.scrollTop/max : 0)*100) + '%';
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+onScroll();
+</script>
+<script src="auth.js"></script>
+</body>
+</html>
