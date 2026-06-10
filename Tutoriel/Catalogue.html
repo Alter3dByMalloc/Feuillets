@@ -214,6 +214,11 @@
     <p>Filtrez par thème et par envie de lecture — chaque récit porte ses propres couleurs et son atmosphère.</p>
   </div>
 <script>
+const carte = document.createElement('div');
+  carte.textContent = "Test Benoit";
+    document.body.appendChild(carte);
+
+  
 const { data: histoires, error } = await client
   .from('histoires')
   .select('*')
