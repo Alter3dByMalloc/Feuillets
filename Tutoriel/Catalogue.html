@@ -213,6 +213,18 @@
     <h1>Explorer les histoires</h1>
     <p>Filtrez par thème et par envie de lecture — chaque récit porte ses propres couleurs et son atmosphère.</p>
   </div>
+<script>
+  const { data: histoires, error } = await client
+  .from('histoires')
+  .select('*')
+  .order('created_at', { ascending: false });
+
+  histoires.forEach(h => {
+  h.titre
+});
+</script>
+
+
 
   <!-- Body -->
   <div class="frame">
