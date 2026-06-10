@@ -216,27 +216,7 @@
 
   <!-- Body -->
 
-<script>
-const carte = document.createElement('div');
-  carte.textContent = "Test Benoit";
-    document.body.appendChild(carte);
 
-  
-const { data: histoires, error } = await client
-  .from('histoires')
-  .select('*')
-  .order('created_at', { ascending: false });
-
-if (error) {
-  console.error('Erreur Supabase :', error.message);
-} else {
-  histoires.forEach(h => {
-    const carte = document.createElement('div');
-    carte.textContent = h.titre;
-    document.body.appendChild(carte);
-  });
-}
-</script>
   
   <div class="frame">
     <div class="catalog-body">
@@ -324,7 +304,32 @@ const CHARS = [
   'Mélancolique','Lumineux','Lecture courte'
 ];
 
-const STORIES = [
+
+  
+const { data: histoires, error } = await client
+  .from('histoires')
+  .select('*')
+  .order('created_at', { ascending: false });
+
+if (error) {
+  console.error('Erreur Supabase :', error.message);
+} else {
+  const STORIES = [];
+  histoires.forEach(h => {
+
+    var valueToPush = new Array();
+    valueToPush[0] = h.titre;
+    valueToPush[1] = "Auteur";
+    valueToPush[2] = "Temps";
+    valueToPush[3] = "Thèmes";
+    valueToPush[4] = "Caractéristiques";
+    valueToPush[4] = "Description";
+    STORIES.push(valueToPush);
+  });
+}
+
+ 
+const STORIES2 = [
   {title:"L'Architecte des Ombres", author:"Jean-Luc Breton", time:35,
    themes:['Polar','Thriller'], chars:['Atmosphérique','Rythme intense','Personnage féminin'],
    excerpt:"Dans une ville brumeuse du Nord, l'inspectrice Vera Kalm traque un tueur qui transforme chaque scène de crime en tableau."},
