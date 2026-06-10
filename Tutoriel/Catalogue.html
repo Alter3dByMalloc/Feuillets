@@ -304,7 +304,7 @@ const CHARS = [
   'Mélancolique','Lumineux','Lecture courte'
 ];
 
-
+const STORIES = [];
   async function chargerHistoires() 
   {
     const { data: histoires, error } = await client
@@ -317,7 +317,7 @@ const CHARS = [
     } 
     else 
     {
-      const STORIES = [];
+      
       histoires.forEach(h => {
     
         var valueToPush = new Array();
