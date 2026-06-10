@@ -305,29 +305,31 @@ const CHARS = [
 ];
 
 
-  async function chargerHistoires() {
-  const { data: histoires, error } = await client
-    .from('histoires')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Erreur Supabase :', error.message);
-  } 
-  else 
+  async function chargerHistoires() 
   {
-    const STORIES = [];
-    histoires.forEach(h => {
+    const { data: histoires, error } = await client
+      .from('histoires')
+      .select('*')
+      .order('created_at', { ascending: false });
   
-      var valueToPush = new Array();
-      valueToPush[0] = 'title:"h.titre"';
-      valueToPush[1] = 'author:"Ben"';
-      valueToPush[2] = "Temps";
-      valueToPush[3] = "Thèmes";
-      valueToPush[4] = "Caractéristiques";
-      valueToPush[4] = "Description";
-      STORIES.push(valueToPush);
-    });
+    if (error) {
+      console.error('Erreur Supabase :', error.message);
+    } 
+    else 
+    {
+      const STORIES = [];
+      histoires.forEach(h => {
+    
+        var valueToPush = new Array();
+        valueToPush[0] = 'title:"h.titre"';
+        valueToPush[1] = 'author:"Ben"';
+        valueToPush[2] = "Temps";
+        valueToPush[3] = "Thèmes";
+        valueToPush[4] = "Caractéristiques";
+        valueToPush[4] = "Description";
+        STORIES.push(valueToPush);
+      });
+    }
   }
 
  
