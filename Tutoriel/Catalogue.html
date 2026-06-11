@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="bdd.js"></script>  
 <style>
   :root{
     --bg:#1c1a18;
@@ -314,22 +315,27 @@ const STORIES = [];
   
     if (error) {
       console.error('Erreur Supabase :', error.message);
-    } 
-    else 
-    {
-      
-      histoires.forEach(h => {
-    
-        var valueToPush = new Array();
-        valueToPush[0] = 'title:"h.titre"';
-        valueToPush[1] = 'author:"Ben"';
-        valueToPush[2] = "Temps";
-        valueToPush[3] = "Thèmes";
-        valueToPush[4] = "Caractéristiques";
-        valueToPush[4] = "Description";
-        STORIES.push(valueToPush);
-      });
+      return;
     }
+    histoires.forEach(h => {
+      STORIES.push({
+      title: h.titre,
+      author: h.auteur,
+      "temps_lecture",
+      "themes",
+      "caracteristiques",
+      excerpt: h.texte
+      });
+      
+      var valueToPush = new Array();
+      valueToPush[0] = 'title:"h.titre"';
+      valueToPush[1] = 'author:"Ben"';
+      valueToPush[2] = "Temps";
+      valueToPush[3] = "Thèmes";
+      valueToPush[4] = "Caractéristiques";
+      valueToPush[4] = "Description";
+      STORIES.push(valueToPush);
+    });
   }
 
  
@@ -705,6 +711,7 @@ function syncViewToggle(){
   
 
 syncViewToggle();
+chargerHistoires() ;  
 render();
 </script>
 <script src="auth.js"></script>
