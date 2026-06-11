@@ -498,7 +498,7 @@ const SLUGS = {
 };
 
 // Fusion des publications d'auteurs avec le catalogue statique
-const STORY_ITEMS = STORIES.map(s => Object.assign({}, s, { slug: SLUGS[s.title], rating: ratingOf(s.title) }))
+const STORY_ITEMS = STORIES2.map(s => Object.assign({}, s, { slug: SLUGS[s.title], rating: ratingOf(s.title) }))
   .concat(window.FP ? FP.catalogStories() : []);
 const SERIES_ITEMS = FS.SERIES.concat(window.FP ? FP.catalogSeries() : []);
 function ratingHtml(it){
