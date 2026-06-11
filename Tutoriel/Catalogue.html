@@ -322,20 +322,12 @@ const STORIES = [];
       STORIES.push({
       title: h.titre,
       author: h.auteur,
-      "temps_lecture",
-      "themes",
-      "caracteristiques",
+      time: "temps_lecture",
+      themes: "themes",
+      chars: "caracteristiques",
       excerpt: h.texte
       });
       
-      var valueToPush = new Array();
-      valueToPush[0] = 'title:"h.titre"';
-      valueToPush[1] = 'author:"Ben"';
-      valueToPush[2] = "Temps";
-      valueToPush[3] = "Thèmes";
-      valueToPush[4] = "Caractéristiques";
-      valueToPush[4] = "Description";
-      STORIES.push(valueToPush);
     });
   }
 
