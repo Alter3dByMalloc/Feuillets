@@ -313,6 +313,9 @@ const STORIES = [];
       .from('histoires')
       .select('*')
       .order('created_at', { ascending: false });
+
+    console.log('histoires:', histoires);  // ← ajoute ça
+    console.log('error:', error);          // ← et ça
   
     if (error) {
       console.error('Erreur Supabase :', error.message);
