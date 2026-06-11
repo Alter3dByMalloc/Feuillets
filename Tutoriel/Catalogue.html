@@ -332,7 +332,6 @@ const STORIES = [];
       });
       
     });
-    render();
   }
 
  
@@ -499,8 +498,11 @@ const SLUGS = {
 };
 
 // Fusion des publications d'auteurs avec le catalogue statique
-const STORY_ITEMS = STORIES.map(s => Object.assign({}, s, { slug: SLUGS[s.title], rating: ratingOf(s.title) }))
-  .concat(window.FP ? FP.catalogStories() : []);
+function getStoryItems() {
+  return STORIES.map(s => Object.assign({}, s, { slug: SLUGS[s.title], rating: ratingOf(s.title) }))
+    .concat(window.FP ? FP.catalogStories() : []);
+}
+
 const SERIES_ITEMS = FS.SERIES.concat(window.FP ? FP.catalogSeries() : []);
 function ratingHtml(it){
   return it.rating == null
@@ -518,7 +520,7 @@ function matches(s){
 }
 
 // accesseurs unifiés histoires / séries
-function currentItems(){ return state.view==='series' ? SERIES_ITEMS : STORY_ITEMS; }
+function currentItems(){ return state.view==='series' ? SERIES_ITEMS : getStoryItems(); }
 function itemRating(it){ return it.rating == null ? -1 : it.rating; }
 function itemTime(it){ return it.time; }
 
